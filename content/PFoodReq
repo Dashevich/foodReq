@@ -1,0 +1,2385 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "gpuType": "T4",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Dashevich/foodReq/blob/main/content/PFoodReq\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "3h5SZejnsV2M",
+        "outputId": "5f773ed1-c6a9-410e-a9b7-723b3cec7216"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Mounted at /content/drive\n"
+          ]
+        }
+      ],
+      "source": [
+        "from google.colab import drive\n",
+        "drive.mount('/content/drive')"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!git clone https://github.com/hugochan/PFoodReq.git"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xfvccrZosv9b",
+        "outputId": "48d31410-925a-4ee8-8245-2e82420201a2"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Cloning into 'PFoodReq'...\n",
+            "remote: Enumerating objects: 75, done.\u001b[K\n",
+            "remote: Counting objects: 100% (75/75), done.\u001b[K\n",
+            "remote: Compressing objects: 100% (49/49), done.\u001b[K\n",
+            "remote: Total 75 (delta 19), reused 70 (delta 17), pack-reused 0 (from 0)\u001b[K\n",
+            "Receiving objects: 100% (75/75), 1.49 MiB | 600.00 KiB/s, done.\n",
+            "Resolving deltas: 100% (19/19), done.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!mkdir PFoodReq/data\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "zlroG2AFtGFQ"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!unzip 'drive/MyDrive/PFoodReq-Data.zip' -d 'PFoodReq/data/'"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "w1Seh10HtQZP",
+        "outputId": "db895ac6-f461-460e-aca6-4d6b2949717e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "unzip:  cannot find or open drive/MyDrive/PFoodReq-Data.zip, drive/MyDrive/PFoodReq-Data.zip.zip or drive/MyDrive/PFoodReq-Data.zip.ZIP.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!cd PFoodReq/"
+      ],
+      "metadata": {
+        "id": "-VYmz-6ZuKUo",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "f0866ba4-3060-4a92-9b93-d74b49fa81b8"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "/bin/bash: line 1: cd: PFoodReq/: No such file or directory\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip3 install -r /content/PFoodReq/requirements.txt\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "id": "VubN309Xu9WK",
+        "outputId": "08b8d6d3-7194-448c-af46-0059d9dc1127"
+      },
+      "execution_count": 32,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting rapidfuzz==0.3.0 (from -r /content/PFoodReq/requirements.txt (line 1))\n",
+            "  Using cached rapidfuzz-0.3.0.tar.gz (15 kB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Collecting gensim==3.5.0 (from -r /content/PFoodReq/requirements.txt (line 2))\n",
+            "  Using cached gensim-3.5.0.tar.gz (22.9 MB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Collecting nltk==3.3 (from -r /content/PFoodReq/requirements.txt (line 3))\n",
+            "  Using cached nltk-3.3.0.zip (1.4 MB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Collecting numpy==1.24.4 (from -r /content/PFoodReq/requirements.txt (line 4))\n",
+            "  Using cached numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.6 kB)\n",
+            "Requirement already satisfied: PyYAML==6.0.2 in /usr/local/lib/python3.10/dist-packages (from -r /content/PFoodReq/requirements.txt (line 5)) (6.0.2)\n",
+            "Collecting torch==2.4.1 (from -r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading torch-2.4.1-cp310-cp310-manylinux1_x86_64.whl.metadata (26 kB)\n",
+            "Collecting pybind11>=2.4 (from rapidfuzz==0.3.0->-r /content/PFoodReq/requirements.txt (line 1))\n",
+            "  Using cached pybind11-2.13.6-py3-none-any.whl.metadata (9.5 kB)\n",
+            "Requirement already satisfied: scipy>=0.18.1 in /usr/local/lib/python3.10/dist-packages (from gensim==3.5.0->-r /content/PFoodReq/requirements.txt (line 2)) (1.13.1)\n",
+            "Requirement already satisfied: six>=1.5.0 in /usr/local/lib/python3.10/dist-packages (from gensim==3.5.0->-r /content/PFoodReq/requirements.txt (line 2)) (1.17.0)\n",
+            "Requirement already satisfied: smart_open>=1.2.1 in /usr/local/lib/python3.10/dist-packages (from gensim==3.5.0->-r /content/PFoodReq/requirements.txt (line 2)) (7.0.5)\n",
+            "Requirement already satisfied: filelock in /usr/local/lib/python3.10/dist-packages (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (3.16.1)\n",
+            "Requirement already satisfied: typing-extensions>=4.8.0 in /usr/local/lib/python3.10/dist-packages (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (4.12.2)\n",
+            "Requirement already satisfied: sympy in /usr/local/lib/python3.10/dist-packages (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (1.13.1)\n",
+            "Requirement already satisfied: networkx in /usr/local/lib/python3.10/dist-packages (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (3.4.2)\n",
+            "Requirement already satisfied: jinja2 in /usr/local/lib/python3.10/dist-packages (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (3.1.4)\n",
+            "Requirement already satisfied: fsspec in /usr/local/lib/python3.10/dist-packages (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (2024.10.0)\n",
+            "Collecting nvidia-cuda-nvrtc-cu12==12.1.105 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata (1.5 kB)\n",
+            "Collecting nvidia-cuda-runtime-cu12==12.1.105 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata (1.5 kB)\n",
+            "Collecting nvidia-cuda-cupti-cu12==12.1.105 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata (1.6 kB)\n",
+            "Collecting nvidia-cudnn-cu12==9.1.0.70 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl.metadata (1.6 kB)\n",
+            "Collecting nvidia-cublas-cu12==12.1.3.1 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl.metadata (1.5 kB)\n",
+            "Collecting nvidia-cufft-cu12==11.0.2.54 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl.metadata (1.5 kB)\n",
+            "Collecting nvidia-curand-cu12==10.3.2.106 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl.metadata (1.5 kB)\n",
+            "Collecting nvidia-cusolver-cu12==11.4.5.107 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl.metadata (1.6 kB)\n",
+            "Collecting nvidia-cusparse-cu12==12.1.0.106 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl.metadata (1.6 kB)\n",
+            "Collecting nvidia-nccl-cu12==2.20.5 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl.metadata (1.8 kB)\n",
+            "Collecting nvidia-nvtx-cu12==12.1.105 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl.metadata (1.7 kB)\n",
+            "Collecting triton==3.0.0 (from torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6))\n",
+            "  Downloading triton-3.0.0-1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (1.3 kB)\n",
+            "Requirement already satisfied: nvidia-nvjitlink-cu12 in /usr/local/lib/python3.10/dist-packages (from nvidia-cusolver-cu12==11.4.5.107->torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (12.6.85)\n",
+            "Requirement already satisfied: wrapt in /usr/local/lib/python3.10/dist-packages (from smart_open>=1.2.1->gensim==3.5.0->-r /content/PFoodReq/requirements.txt (line 2)) (1.17.0)\n",
+            "Requirement already satisfied: MarkupSafe>=2.0 in /usr/local/lib/python3.10/dist-packages (from jinja2->torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (3.0.2)\n",
+            "Requirement already satisfied: mpmath<1.4,>=1.1.0 in /usr/local/lib/python3.10/dist-packages (from sympy->torch==2.4.1->-r /content/PFoodReq/requirements.txt (line 6)) (1.3.0)\n",
+            "Downloading numpy-1.24.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (17.3 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m17.3/17.3 MB\u001b[0m \u001b[31m56.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading torch-2.4.1-cp310-cp310-manylinux1_x86_64.whl (797.1 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m797.1/797.1 MB\u001b[0m \u001b[31m1.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cublas_cu12-12.1.3.1-py3-none-manylinux1_x86_64.whl (410.6 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m410.6/410.6 MB\u001b[0m \u001b[31m4.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cuda_cupti_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (14.1 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m14.1/14.1 MB\u001b[0m \u001b[31m59.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cuda_nvrtc_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (23.7 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m23.7/23.7 MB\u001b[0m \u001b[31m37.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cuda_runtime_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (823 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m823.6/823.6 kB\u001b[0m \u001b[31m53.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cudnn_cu12-9.1.0.70-py3-none-manylinux2014_x86_64.whl (664.8 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m664.8/664.8 MB\u001b[0m \u001b[31m2.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cufft_cu12-11.0.2.54-py3-none-manylinux1_x86_64.whl (121.6 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m121.6/121.6 MB\u001b[0m \u001b[31m7.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_curand_cu12-10.3.2.106-py3-none-manylinux1_x86_64.whl (56.5 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m56.5/56.5 MB\u001b[0m \u001b[31m12.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl (124.2 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m124.2/124.2 MB\u001b[0m \u001b[31m7.4 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl (196.0 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m196.0/196.0 MB\u001b[0m \u001b[31m6.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl (176.2 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m176.2/176.2 MB\u001b[0m \u001b[31m6.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nvidia_nvtx_cu12-12.1.105-py3-none-manylinux1_x86_64.whl (99 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m99.1/99.1 kB\u001b[0m \u001b[31m8.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading triton-3.0.0-1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (209.4 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m209.4/209.4 MB\u001b[0m \u001b[31m5.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hUsing cached pybind11-2.13.6-py3-none-any.whl (243 kB)\n",
+            "Building wheels for collected packages: rapidfuzz, gensim, nltk\n",
+            "  Building wheel for rapidfuzz (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for rapidfuzz: filename=rapidfuzz-0.3.0-cp310-cp310-linux_x86_64.whl size=1442607 sha256=a5f96552aaecaf9a6428b1dbea3ec91c6f128ba358d5ce23d9f137d8e1bececb\n",
+            "  Stored in directory: /root/.cache/pip/wheels/e3/9f/a1/4a02bf8dfc2eb5d1063e80077b828024fdea9c7655ffbfbd3d\n",
+            "  Building wheel for gensim (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for gensim: filename=gensim-3.5.0-cp310-cp310-linux_x86_64.whl size=23864181 sha256=c419bb9363dd099d344ae1e922879ddccdd288a50296226b2e65d2f7ed2e675c\n",
+            "  Stored in directory: /root/.cache/pip/wheels/51/98/81/0626b3e62f5d1f0e5c0c77974091c85016b4b4e8b6439012ed\n",
+            "  Building wheel for nltk (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for nltk: filename=nltk-3.3-py3-none-any.whl size=1394472 sha256=11cffa162ec505305112234c6599e0758c67d4b08fdd3d1e8cf42a876cdcc216\n",
+            "  Stored in directory: /root/.cache/pip/wheels/6b/6d/14/3defa4cd7013faeddf715150696f4a96d7725c87700eb8a68e\n",
+            "Successfully built rapidfuzz gensim nltk\n",
+            "Installing collected packages: triton, pybind11, nvidia-nvtx-cu12, nvidia-nccl-cu12, nvidia-cusparse-cu12, nvidia-curand-cu12, nvidia-cufft-cu12, nvidia-cuda-runtime-cu12, nvidia-cuda-nvrtc-cu12, nvidia-cuda-cupti-cu12, nvidia-cublas-cu12, numpy, nltk, rapidfuzz, nvidia-cusolver-cu12, nvidia-cudnn-cu12, torch, gensim\n",
+            "  Attempting uninstall: nvidia-nccl-cu12\n",
+            "    Found existing installation: nvidia-nccl-cu12 2.23.4\n",
+            "    Uninstalling nvidia-nccl-cu12-2.23.4:\n",
+            "      Successfully uninstalled nvidia-nccl-cu12-2.23.4\n",
+            "  Attempting uninstall: nvidia-cusparse-cu12\n",
+            "    Found existing installation: nvidia-cusparse-cu12 12.5.4.2\n",
+            "    Uninstalling nvidia-cusparse-cu12-12.5.4.2:\n",
+            "      Successfully uninstalled nvidia-cusparse-cu12-12.5.4.2\n",
+            "  Attempting uninstall: nvidia-curand-cu12\n",
+            "    Found existing installation: nvidia-curand-cu12 10.3.7.77\n",
+            "    Uninstalling nvidia-curand-cu12-10.3.7.77:\n",
+            "      Successfully uninstalled nvidia-curand-cu12-10.3.7.77\n",
+            "  Attempting uninstall: nvidia-cufft-cu12\n",
+            "    Found existing installation: nvidia-cufft-cu12 11.3.0.4\n",
+            "    Uninstalling nvidia-cufft-cu12-11.3.0.4:\n",
+            "      Successfully uninstalled nvidia-cufft-cu12-11.3.0.4\n",
+            "  Attempting uninstall: nvidia-cuda-runtime-cu12\n",
+            "    Found existing installation: nvidia-cuda-runtime-cu12 12.6.77\n",
+            "    Uninstalling nvidia-cuda-runtime-cu12-12.6.77:\n",
+            "      Successfully uninstalled nvidia-cuda-runtime-cu12-12.6.77\n",
+            "  Attempting uninstall: nvidia-cuda-cupti-cu12\n",
+            "    Found existing installation: nvidia-cuda-cupti-cu12 12.6.80\n",
+            "    Uninstalling nvidia-cuda-cupti-cu12-12.6.80:\n",
+            "      Successfully uninstalled nvidia-cuda-cupti-cu12-12.6.80\n",
+            "  Attempting uninstall: nvidia-cublas-cu12\n",
+            "    Found existing installation: nvidia-cublas-cu12 12.6.4.1\n",
+            "    Uninstalling nvidia-cublas-cu12-12.6.4.1:\n",
+            "      Successfully uninstalled nvidia-cublas-cu12-12.6.4.1\n",
+            "  Attempting uninstall: numpy\n",
+            "    Found existing installation: numpy 1.26.4\n",
+            "    Uninstalling numpy-1.26.4:\n",
+            "      Successfully uninstalled numpy-1.26.4\n",
+            "  Attempting uninstall: nltk\n",
+            "    Found existing installation: nltk 3.9.1\n",
+            "    Uninstalling nltk-3.9.1:\n",
+            "      Successfully uninstalled nltk-3.9.1\n",
+            "  Attempting uninstall: rapidfuzz\n",
+            "    Found existing installation: RapidFuzz 3.10.1\n",
+            "    Uninstalling RapidFuzz-3.10.1:\n",
+            "      Successfully uninstalled RapidFuzz-3.10.1\n",
+            "  Attempting uninstall: nvidia-cusolver-cu12\n",
+            "    Found existing installation: nvidia-cusolver-cu12 11.7.1.2\n",
+            "    Uninstalling nvidia-cusolver-cu12-11.7.1.2:\n",
+            "      Successfully uninstalled nvidia-cusolver-cu12-11.7.1.2\n",
+            "  Attempting uninstall: nvidia-cudnn-cu12\n",
+            "    Found existing installation: nvidia-cudnn-cu12 9.6.0.74\n",
+            "    Uninstalling nvidia-cudnn-cu12-9.6.0.74:\n",
+            "      Successfully uninstalled nvidia-cudnn-cu12-9.6.0.74\n",
+            "  Attempting uninstall: torch\n",
+            "    Found existing installation: torch 2.5.1+cu121\n",
+            "    Uninstalling torch-2.5.1+cu121:\n",
+            "      Successfully uninstalled torch-2.5.1+cu121\n",
+            "  Attempting uninstall: gensim\n",
+            "    Found existing installation: gensim 4.3.3\n",
+            "    Uninstalling gensim-4.3.3:\n",
+            "      Successfully uninstalled gensim-4.3.3\n",
+            "\u001b[31mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n",
+            "torchaudio 2.5.1+cu121 requires torch==2.5.1, but you have torch 2.4.1 which is incompatible.\n",
+            "torchvision 0.20.1+cu121 requires torch==2.5.1, but you have torch 2.4.1 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed gensim-3.5.0 nltk-3.3 numpy-1.24.4 nvidia-cublas-cu12-12.1.3.1 nvidia-cuda-cupti-cu12-12.1.105 nvidia-cuda-nvrtc-cu12-12.1.105 nvidia-cuda-runtime-cu12-12.1.105 nvidia-cudnn-cu12-9.1.0.70 nvidia-cufft-cu12-11.0.2.54 nvidia-curand-cu12-10.3.2.106 nvidia-cusolver-cu12-11.4.5.107 nvidia-cusparse-cu12-12.1.0.106 nvidia-nccl-cu12-2.20.5 nvidia-nvtx-cu12-12.1.105 pybind11-2.13.6 rapidfuzz-0.3.0 torch-2.4.1 triton-3.0.0\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "application/vnd.colab-display-data+json": {
+              "pip_warning": {
+                "packages": [
+                  "nltk",
+                  "numpy"
+                ]
+              },
+              "id": "8bdabd60d0e84da39c7b2a228c4a2190"
+            }
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip freeze"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "j4CyjQ7cvENf",
+        "outputId": "2726447a-b826-4f59-d6b7-cb0b8a378120"
+      },
+      "execution_count": 33,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "absl-py==1.4.0\n",
+            "accelerate==1.1.1\n",
+            "aiohappyeyeballs==2.4.4\n",
+            "aiohttp==3.11.10\n",
+            "aiosignal==1.3.1\n",
+            "alabaster==1.0.0\n",
+            "albucore==0.0.19\n",
+            "albumentations==1.4.20\n",
+            "altair==5.5.0\n",
+            "annotated-types==0.7.0\n",
+            "anyio==3.7.1\n",
+            "argon2-cffi==23.1.0\n",
+            "argon2-cffi-bindings==21.2.0\n",
+            "array_record==0.5.1\n",
+            "arviz==0.20.0\n",
+            "astropy==6.1.7\n",
+            "astropy-iers-data==0.2024.12.9.0.36.21\n",
+            "astunparse==1.6.3\n",
+            "async-timeout==4.0.3\n",
+            "atpublic==4.1.0\n",
+            "attrs==24.2.0\n",
+            "audioread==3.0.1\n",
+            "autograd==1.7.0\n",
+            "babel==2.16.0\n",
+            "backcall==0.2.0\n",
+            "beautifulsoup4==4.12.3\n",
+            "bigframes==1.27.0\n",
+            "bigquery-magics==0.4.0\n",
+            "bleach==6.2.0\n",
+            "blinker==1.9.0\n",
+            "blis==0.7.11\n",
+            "blosc2==2.7.1\n",
+            "bokeh==3.6.2\n",
+            "Bottleneck==1.4.2\n",
+            "bqplot==0.12.43\n",
+            "branca==0.8.0\n",
+            "CacheControl==0.14.1\n",
+            "cachetools==5.5.0\n",
+            "catalogue==2.0.10\n",
+            "certifi==2024.8.30\n",
+            "cffi==1.17.1\n",
+            "chardet==5.2.0\n",
+            "charset-normalizer==3.4.0\n",
+            "chex==0.1.87\n",
+            "clarabel==0.9.0\n",
+            "click==8.1.7\n",
+            "cloudpathlib==0.20.0\n",
+            "cloudpickle==3.1.0\n",
+            "cmake==3.30.5\n",
+            "cmdstanpy==1.2.4\n",
+            "colorcet==3.1.0\n",
+            "colorlover==0.3.0\n",
+            "colour==0.1.5\n",
+            "community==1.0.0b1\n",
+            "confection==0.1.5\n",
+            "cons==0.4.6\n",
+            "contourpy==1.3.1\n",
+            "cryptography==43.0.3\n",
+            "cuda-python==12.2.1\n",
+            "cudf-cu12 @ https://pypi.nvidia.com/cudf-cu12/cudf_cu12-24.10.1-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl\n",
+            "cufflinks==0.17.3\n",
+            "cupy-cuda12x==12.2.0\n",
+            "cvxopt==1.3.2\n",
+            "cvxpy==1.5.4\n",
+            "cycler==0.12.1\n",
+            "cymem==2.0.10\n",
+            "Cython==3.0.11\n",
+            "dask==2024.10.0\n",
+            "datascience==0.17.6\n",
+            "db-dtypes==1.3.1\n",
+            "dbus-python==1.2.18\n",
+            "debugpy==1.8.0\n",
+            "decorator==4.4.2\n",
+            "defusedxml==0.7.1\n",
+            "Deprecated==1.2.15\n",
+            "diffusers==0.31.0\n",
+            "distro==1.9.0\n",
+            "dlib==19.24.2\n",
+            "dm-tree==0.1.8\n",
+            "docker-pycreds==0.4.0\n",
+            "docstring_parser==0.16\n",
+            "docutils==0.21.2\n",
+            "dopamine_rl==4.0.9\n",
+            "duckdb==1.1.3\n",
+            "earthengine-api==1.2.0\n",
+            "easydict==1.13\n",
+            "ecos==2.0.14\n",
+            "editdistance==0.8.1\n",
+            "eerepr==0.0.4\n",
+            "einops==0.8.0\n",
+            "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl#sha256=86cc141f63942d4b2c5fcee06630fd6f904788d2f0ab005cce45aadb8fb73889\n",
+            "entrypoints==0.4\n",
+            "et_xmlfile==2.0.0\n",
+            "etils==1.11.0\n",
+            "etuples==0.3.9\n",
+            "eval_type_backport==0.2.0\n",
+            "exceptiongroup==1.2.2\n",
+            "fastai==2.7.18\n",
+            "fastcore==1.7.26\n",
+            "fastdownload==0.0.7\n",
+            "fastjsonschema==2.21.1\n",
+            "fastprogress==1.0.3\n",
+            "fastrlock==0.8.2\n",
+            "filelock==3.16.1\n",
+            "firebase-admin==6.5.0\n",
+            "Flask==3.0.3\n",
+            "flatbuffers==24.3.25\n",
+            "flax==0.8.5\n",
+            "folium==0.18.0\n",
+            "fonttools==4.55.3\n",
+            "frozendict==2.4.6\n",
+            "frozenlist==1.5.0\n",
+            "fsspec==2024.10.0\n",
+            "future==1.0.0\n",
+            "gast==0.6.0\n",
+            "gcsfs==2024.10.0\n",
+            "GDAL==3.6.4\n",
+            "gdown==5.2.0\n",
+            "geemap==0.35.1\n",
+            "gensim==3.5.0\n",
+            "geocoder==1.38.1\n",
+            "geographiclib==2.0\n",
+            "geopandas==1.0.1\n",
+            "geopy==2.4.1\n",
+            "gin-config==0.5.0\n",
+            "gitdb==4.0.11\n",
+            "GitPython==3.1.43\n",
+            "glob2==0.7\n",
+            "google==2.0.3\n",
+            "google-ai-generativelanguage==0.6.10\n",
+            "google-api-core==2.19.2\n",
+            "google-api-python-client==2.151.0\n",
+            "google-auth==2.27.0\n",
+            "google-auth-httplib2==0.2.0\n",
+            "google-auth-oauthlib==1.2.1\n",
+            "google-cloud-aiplatform==1.73.0\n",
+            "google-cloud-bigquery==3.25.0\n",
+            "google-cloud-bigquery-connection==1.16.1\n",
+            "google-cloud-bigquery-storage==2.27.0\n",
+            "google-cloud-bigtable==2.27.0\n",
+            "google-cloud-core==2.4.1\n",
+            "google-cloud-datastore==2.20.1\n",
+            "google-cloud-firestore==2.19.0\n",
+            "google-cloud-functions==1.18.1\n",
+            "google-cloud-iam==2.16.1\n",
+            "google-cloud-language==2.15.1\n",
+            "google-cloud-pubsub==2.27.1\n",
+            "google-cloud-resource-manager==1.13.1\n",
+            "google-cloud-storage==2.8.0\n",
+            "google-cloud-translate==3.17.0\n",
+            "google-colab @ file:///colabtools/dist/google_colab-1.0.0.tar.gz\n",
+            "google-crc32c==1.6.0\n",
+            "google-genai==0.1.0\n",
+            "google-generativeai==0.8.3\n",
+            "google-pasta==0.2.0\n",
+            "google-resumable-media==2.7.2\n",
+            "googleapis-common-protos==1.66.0\n",
+            "googledrivedownloader==0.4\n",
+            "graphviz==0.20.3\n",
+            "greenlet==3.1.1\n",
+            "grpc-google-iam-v1==0.13.1\n",
+            "grpcio==1.68.1\n",
+            "grpcio-status==1.62.3\n",
+            "gspread==6.0.2\n",
+            "gspread-dataframe==3.3.1\n",
+            "gym==0.25.2\n",
+            "gym-notices==0.0.8\n",
+            "h11==0.14.0\n",
+            "h5netcdf==1.4.1\n",
+            "h5py==3.12.1\n",
+            "holidays==0.62\n",
+            "holoviews==1.20.0\n",
+            "html5lib==1.1\n",
+            "httpcore==1.0.7\n",
+            "httpimport==1.4.0\n",
+            "httplib2==0.22.0\n",
+            "httpx==0.28.1\n",
+            "huggingface-hub==0.26.5\n",
+            "humanize==4.11.0\n",
+            "hyperopt==0.2.7\n",
+            "ibis-framework==9.2.0\n",
+            "idna==3.10\n",
+            "imageio==2.36.1\n",
+            "imageio-ffmpeg==0.5.1\n",
+            "imagesize==1.4.1\n",
+            "imbalanced-learn==0.12.4\n",
+            "imgaug==0.4.0\n",
+            "immutabledict==4.2.1\n",
+            "importlib_metadata==8.5.0\n",
+            "importlib_resources==6.4.5\n",
+            "imutils==0.5.4\n",
+            "inflect==7.4.0\n",
+            "iniconfig==2.0.0\n",
+            "intel-cmplr-lib-ur==2025.0.3\n",
+            "intel-openmp==2025.0.3\n",
+            "ipyevents==2.0.2\n",
+            "ipyfilechooser==0.6.0\n",
+            "ipykernel==5.5.6\n",
+            "ipyleaflet==0.19.2\n",
+            "ipyparallel==8.8.0\n",
+            "ipython==7.34.0\n",
+            "ipython-genutils==0.2.0\n",
+            "ipython-sql==0.5.0\n",
+            "ipytree==0.2.2\n",
+            "ipywidgets==7.7.1\n",
+            "itsdangerous==2.2.0\n",
+            "jax==0.4.33\n",
+            "jax-cuda12-pjrt==0.4.33\n",
+            "jax-cuda12-plugin==0.4.33\n",
+            "jaxlib==0.4.33\n",
+            "jeepney==0.7.1\n",
+            "jellyfish==1.1.2\n",
+            "jieba==0.42.1\n",
+            "Jinja2==3.1.4\n",
+            "jiter==0.8.2\n",
+            "joblib==1.4.2\n",
+            "jsonpatch==1.33\n",
+            "jsonpickle==4.0.0\n",
+            "jsonpointer==3.0.0\n",
+            "jsonschema==4.23.0\n",
+            "jsonschema-specifications==2024.10.1\n",
+            "jupyter-client==6.1.12\n",
+            "jupyter-console==6.1.0\n",
+            "jupyter-leaflet==0.19.2\n",
+            "jupyter-server==1.24.0\n",
+            "jupyter_core==5.7.2\n",
+            "jupyterlab_pygments==0.3.0\n",
+            "jupyterlab_widgets==3.0.13\n",
+            "kaggle==1.6.17\n",
+            "kagglehub==0.3.4\n",
+            "keras==3.5.0\n",
+            "keyring==23.5.0\n",
+            "kiwisolver==1.4.7\n",
+            "langchain==0.3.11\n",
+            "langchain-core==0.3.24\n",
+            "langchain-text-splitters==0.3.2\n",
+            "langcodes==3.5.0\n",
+            "langsmith==0.2.2\n",
+            "language_data==1.3.0\n",
+            "launchpadlib==1.10.16\n",
+            "lazr.restfulclient==0.14.4\n",
+            "lazr.uri==1.0.6\n",
+            "lazy_loader==0.4\n",
+            "libclang==18.1.1\n",
+            "libcudf-cu12 @ https://pypi.nvidia.com/libcudf-cu12/libcudf_cu12-24.10.1-py3-none-manylinux_2_28_x86_64.whl\n",
+            "librosa==0.10.2.post1\n",
+            "lightgbm==4.5.0\n",
+            "linkify-it-py==2.0.3\n",
+            "llvmlite==0.43.0\n",
+            "locket==1.0.0\n",
+            "logical-unification==0.4.6\n",
+            "lxml==5.3.0\n",
+            "marisa-trie==1.2.1\n",
+            "Markdown==3.7\n",
+            "markdown-it-py==3.0.0\n",
+            "MarkupSafe==3.0.2\n",
+            "matplotlib==3.8.0\n",
+            "matplotlib-inline==0.1.7\n",
+            "matplotlib-venn==1.1.1\n",
+            "mdit-py-plugins==0.4.2\n",
+            "mdurl==0.1.2\n",
+            "miniKanren==1.0.3\n",
+            "missingno==0.5.2\n",
+            "mistune==3.0.2\n",
+            "mizani==0.13.1\n",
+            "mkl==2025.0.1\n",
+            "ml-dtypes==0.4.1\n",
+            "mlxtend==0.23.3\n",
+            "more-itertools==10.5.0\n",
+            "moviepy==1.0.3\n",
+            "mpmath==1.3.0\n",
+            "msgpack==1.1.0\n",
+            "multidict==6.1.0\n",
+            "multipledispatch==1.0.0\n",
+            "multitasking==0.0.11\n",
+            "murmurhash==1.0.11\n",
+            "music21==9.3.0\n",
+            "namex==0.0.8\n",
+            "narwhals==1.17.0\n",
+            "natsort==8.4.0\n",
+            "nbclassic==1.1.0\n",
+            "nbclient==0.10.1\n",
+            "nbconvert==7.16.4\n",
+            "nbformat==5.10.4\n",
+            "ndindex==1.9.2\n",
+            "nest-asyncio==1.6.0\n",
+            "networkx==3.4.2\n",
+            "nibabel==5.3.2\n",
+            "nltk==3.3\n",
+            "notebook==6.5.5\n",
+            "notebook_shim==0.2.4\n",
+            "numba==0.60.0\n",
+            "numexpr==2.10.2\n",
+            "numpy==1.24.4\n",
+            "nvidia-cublas-cu12==12.1.3.1\n",
+            "nvidia-cuda-cupti-cu12==12.1.105\n",
+            "nvidia-cuda-nvcc-cu12==12.6.85\n",
+            "nvidia-cuda-nvrtc-cu12==12.1.105\n",
+            "nvidia-cuda-runtime-cu12==12.1.105\n",
+            "nvidia-cudnn-cu12==9.1.0.70\n",
+            "nvidia-cufft-cu12==11.0.2.54\n",
+            "nvidia-curand-cu12==10.3.2.106\n",
+            "nvidia-cusolver-cu12==11.4.5.107\n",
+            "nvidia-cusparse-cu12==12.1.0.106\n",
+            "nvidia-nccl-cu12==2.20.5\n",
+            "nvidia-nvjitlink-cu12==12.6.85\n",
+            "nvidia-nvtx-cu12==12.1.105\n",
+            "nvtx==0.2.10\n",
+            "nx-cugraph-cu12 @ https://pypi.nvidia.com/nx-cugraph-cu12/nx_cugraph_cu12-24.10.0-py3-none-any.whl\n",
+            "oauth2client==4.1.3\n",
+            "oauthlib==3.2.2\n",
+            "openai==1.54.5\n",
+            "opencv-contrib-python==4.10.0.84\n",
+            "opencv-python==4.10.0.84\n",
+            "opencv-python-headless==4.10.0.84\n",
+            "openpyxl==3.1.5\n",
+            "opentelemetry-api==1.28.2\n",
+            "opentelemetry-sdk==1.28.2\n",
+            "opentelemetry-semantic-conventions==0.49b2\n",
+            "opt_einsum==3.4.0\n",
+            "optax==0.2.4\n",
+            "optree==0.13.1\n",
+            "orbax-checkpoint==0.6.4\n",
+            "orjson==3.10.12\n",
+            "osqp==0.6.7.post3\n",
+            "packaging==24.2\n",
+            "pandas==2.2.2\n",
+            "pandas-datareader==0.10.0\n",
+            "pandas-gbq==0.24.0\n",
+            "pandas-stubs==2.2.2.240909\n",
+            "pandocfilters==1.5.1\n",
+            "panel==1.5.4\n",
+            "param==2.1.1\n",
+            "parso==0.8.4\n",
+            "parsy==2.1\n",
+            "partd==1.4.2\n",
+            "pathlib==1.0.1\n",
+            "patsy==1.0.1\n",
+            "peewee==3.17.8\n",
+            "peft==0.13.2\n",
+            "pexpect==4.9.0\n",
+            "pickleshare==0.7.5\n",
+            "pillow==11.0.0\n",
+            "platformdirs==4.3.6\n",
+            "plotly==5.24.1\n",
+            "plotnine==0.14.3\n",
+            "pluggy==1.5.0\n",
+            "ply==3.11\n",
+            "polars==1.9.0\n",
+            "pooch==1.8.2\n",
+            "portpicker==1.5.2\n",
+            "preshed==3.0.9\n",
+            "prettytable==3.12.0\n",
+            "proglog==0.1.10\n",
+            "progressbar2==4.5.0\n",
+            "prometheus_client==0.21.1\n",
+            "promise==2.3\n",
+            "prompt_toolkit==3.0.48\n",
+            "propcache==0.2.1\n",
+            "prophet==1.1.6\n",
+            "proto-plus==1.25.0\n",
+            "protobuf==4.25.5\n",
+            "psutil==5.9.5\n",
+            "psycopg2==2.9.10\n",
+            "ptyprocess==0.7.0\n",
+            "py-cpuinfo==9.0.0\n",
+            "py4j==0.10.9.7\n",
+            "pyarrow==17.0.0\n",
+            "pyarrow-hotfix==0.6\n",
+            "pyasn1==0.6.1\n",
+            "pyasn1_modules==0.4.1\n",
+            "pybind11==2.13.6\n",
+            "pycocotools==2.0.8\n",
+            "pycparser==2.22\n",
+            "pydantic==2.10.3\n",
+            "pydantic_core==2.27.1\n",
+            "pydata-google-auth==1.9.0\n",
+            "pydot==3.0.3\n",
+            "pydotplus==2.0.2\n",
+            "PyDrive==1.3.1\n",
+            "PyDrive2==1.21.3\n",
+            "pyerfa==2.0.1.5\n",
+            "pygame==2.6.1\n",
+            "pygit2==1.16.0\n",
+            "Pygments==2.18.0\n",
+            "PyGObject==3.42.1\n",
+            "PyJWT==2.10.1\n",
+            "pylibcudf-cu12 @ https://pypi.nvidia.com/pylibcudf-cu12/pylibcudf_cu12-24.10.1-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl\n",
+            "pylibcugraph-cu12==24.10.0\n",
+            "pylibraft-cu12==24.10.0\n",
+            "pymc==5.18.2\n",
+            "pymystem3==0.2.0\n",
+            "pynvjitlink-cu12==0.4.0\n",
+            "pyogrio==0.10.0\n",
+            "Pyomo==6.8.2\n",
+            "PyOpenGL==3.1.7\n",
+            "pyOpenSSL==24.2.1\n",
+            "pyparsing==3.2.0\n",
+            "pyperclip==1.9.0\n",
+            "pyproj==3.7.0\n",
+            "pyshp==2.3.1\n",
+            "PySocks==1.7.1\n",
+            "pyspark==3.5.3\n",
+            "pytensor==2.26.4\n",
+            "pytest==8.3.4\n",
+            "python-apt==0.0.0\n",
+            "python-box==7.3.0\n",
+            "python-dateutil==2.8.2\n",
+            "python-louvain==0.16\n",
+            "python-slugify==8.0.4\n",
+            "python-utils==3.9.1\n",
+            "pytz==2024.2\n",
+            "pyviz_comms==3.0.3\n",
+            "PyYAML==6.0.2\n",
+            "pyzmq==24.0.1\n",
+            "qdldl==0.1.7.post4\n",
+            "rapidfuzz==0.3.0\n",
+            "ratelim==0.1.6\n",
+            "referencing==0.35.1\n",
+            "regex==2024.9.11\n",
+            "requests==2.32.3\n",
+            "requests-oauthlib==1.3.1\n",
+            "requests-toolbelt==1.0.0\n",
+            "requirements-parser==0.9.0\n",
+            "rich==13.9.4\n",
+            "rmm-cu12==24.10.0\n",
+            "rpds-py==0.22.3\n",
+            "rpy2==3.4.2\n",
+            "rsa==4.9\n",
+            "safetensors==0.4.5\n",
+            "scikit-image==0.24.0\n",
+            "scikit-learn==1.5.2\n",
+            "scipy==1.13.1\n",
+            "scooby==0.10.0\n",
+            "scs==3.2.7\n",
+            "seaborn==0.13.2\n",
+            "SecretStorage==3.3.1\n",
+            "Send2Trash==1.8.3\n",
+            "sentence-transformers==3.2.1\n",
+            "sentencepiece==0.2.0\n",
+            "sentry-sdk==2.19.2\n",
+            "setproctitle==1.3.4\n",
+            "shap==0.46.0\n",
+            "shapely==2.0.6\n",
+            "shellingham==1.5.4\n",
+            "simple-parsing==0.1.6\n",
+            "six==1.17.0\n",
+            "sklearn-pandas==2.2.0\n",
+            "slicer==0.0.8\n",
+            "smart-open==7.0.5\n",
+            "smmap==5.0.1\n",
+            "sniffio==1.3.1\n",
+            "snowballstemmer==2.2.0\n",
+            "soundfile==0.12.1\n",
+            "soupsieve==2.6\n",
+            "soxr==0.5.0.post1\n",
+            "spacy==3.7.5\n",
+            "spacy-legacy==3.0.12\n",
+            "spacy-loggers==1.0.5\n",
+            "Sphinx==8.1.3\n",
+            "sphinxcontrib-applehelp==2.0.0\n",
+            "sphinxcontrib-devhelp==2.0.0\n",
+            "sphinxcontrib-htmlhelp==2.1.0\n",
+            "sphinxcontrib-jsmath==1.0.1\n",
+            "sphinxcontrib-qthelp==2.0.0\n",
+            "sphinxcontrib-serializinghtml==2.0.0\n",
+            "SQLAlchemy==2.0.36\n",
+            "sqlglot==25.1.0\n",
+            "sqlparse==0.5.3\n",
+            "srsly==2.5.0\n",
+            "stanio==0.5.1\n",
+            "statsmodels==0.14.4\n",
+            "StrEnum==0.4.15\n",
+            "stringzilla==3.11.0\n",
+            "sympy==1.13.1\n",
+            "tables==3.10.1\n",
+            "tabulate==0.9.0\n",
+            "tbb==2022.0.0\n",
+            "tcmlib==1.2.0\n",
+            "tenacity==9.0.0\n",
+            "tensorboard==2.17.1\n",
+            "tensorboard-data-server==0.7.2\n",
+            "tensorflow==2.17.1\n",
+            "tensorflow-datasets==4.9.7\n",
+            "tensorflow-hub==0.16.1\n",
+            "tensorflow-io-gcs-filesystem==0.37.1\n",
+            "tensorflow-metadata==1.13.1\n",
+            "tensorflow-probability==0.24.0\n",
+            "tensorstore==0.1.69\n",
+            "termcolor==2.5.0\n",
+            "terminado==0.18.1\n",
+            "text-unidecode==1.3\n",
+            "textblob==0.17.1\n",
+            "tf-slim==1.1.0\n",
+            "tf_keras==2.17.0\n",
+            "thinc==8.2.5\n",
+            "threadpoolctl==3.5.0\n",
+            "tifffile==2024.9.20\n",
+            "timm==1.0.12\n",
+            "tinycss2==1.4.0\n",
+            "tokenizers==0.20.3\n",
+            "toml==0.10.2\n",
+            "tomli==2.2.1\n",
+            "toolz==0.12.1\n",
+            "torch==2.4.1\n",
+            "torchaudio @ https://download.pytorch.org/whl/cu121/torchaudio-2.5.1%2Bcu121-cp310-cp310-linux_x86_64.whl\n",
+            "torchsummary==1.5.1\n",
+            "torchvision @ https://download.pytorch.org/whl/cu121/torchvision-0.20.1%2Bcu121-cp310-cp310-linux_x86_64.whl\n",
+            "tornado==6.3.3\n",
+            "tqdm==4.66.6\n",
+            "traitlets==5.7.1\n",
+            "traittypes==0.2.1\n",
+            "transformers==4.46.3\n",
+            "triton==3.0.0\n",
+            "tweepy==4.14.0\n",
+            "typeguard==4.4.1\n",
+            "typer==0.15.1\n",
+            "types-pytz==2024.2.0.20241003\n",
+            "types-setuptools==75.6.0.20241126\n",
+            "typing_extensions==4.12.2\n",
+            "tzdata==2024.2\n",
+            "tzlocal==5.2\n",
+            "uc-micro-py==1.0.3\n",
+            "umf==0.9.1\n",
+            "uritemplate==4.1.1\n",
+            "urllib3==2.2.3\n",
+            "vega-datasets==0.9.0\n",
+            "wadllib==1.3.6\n",
+            "wandb==0.18.7\n",
+            "wasabi==1.1.3\n",
+            "wcwidth==0.2.13\n",
+            "weasel==0.4.1\n",
+            "webcolors==24.11.1\n",
+            "webencodings==0.5.1\n",
+            "websocket-client==1.8.0\n",
+            "websockets==14.1\n",
+            "Werkzeug==3.1.3\n",
+            "widgetsnbextension==3.6.10\n",
+            "wordcloud==1.9.4\n",
+            "wrapt==1.17.0\n",
+            "xarray==2024.10.0\n",
+            "xarray-einstats==0.8.0\n",
+            "xgboost==2.1.3\n",
+            "xlrd==2.0.1\n",
+            "xyzservices==2024.9.0\n",
+            "yarl==1.18.3\n",
+            "yellowbrick==1.5\n",
+            "yfinance==0.2.50\n",
+            "zipp==3.21.0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/data_builder/src/generate_all_qa.py -recipe /content/PFoodReq/data/recipe_kg/recipe_kg.json -o /content/PFoodReq/data/kbqa_data/ -out_of_domain_ratio 0.1 -split_ratio 0.6 0.2\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "P6OeTQu2vj2W",
+        "outputId": "84b5d3ad-1c4c-4c43-e465-71a5b82b236b"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Num. of in-domain food tags: 215\n",
+            "Num. of out-of-domain food tags: 23\n",
+            "Num. of in-domain questions: 7675\n",
+            "Num. of out-of-domain questions: 789\n",
+            "Generated totally 8464 qas, training size: 4605, validation size: 1535, test size: 2324, out-of-domain test size: 789\n",
+            "Saved qas to /content/PFoodReq/data/kbqa_data/\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip show pyyaml\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "aj8wKD5UwNOT",
+        "outputId": "43233425-b3bd-4d6a-d499-7d18383aa5ff"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Name: PyYAML\n",
+            "Version: 6.0.2\n",
+            "Summary: YAML parser and emitter for Python\n",
+            "Home-page: https://pyyaml.org/\n",
+            "Author: Kirill Simonov\n",
+            "Author-email: xi@resolvent.net\n",
+            "License: MIT\n",
+            "Location: /usr/local/lib/python3.10/dist-packages\n",
+            "Requires: \n",
+            "Required-by: accelerate, albumentations, astropy, bokeh, dask, fastai, flax, huggingface-hub, langchain, langchain-core, orbax-checkpoint, peft, PyDrive, PyDrive2, timm, transformers, wandb\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!unzip 'drive/MyDrive/glove.840B.300d.zip' -d 'PFoodReq/data/'"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dIGJngzyxFVQ",
+        "outputId": "43d81b93-da9d-4c74-e248-8466568d8205"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Archive:  drive/MyDrive/glove.840B.300d.zip\n",
+            "replace PFoodReq/data/glove.840B.300d.txt? [y]es, [n]o, [A]ll, [N]one, [r]ename: y\n",
+            "  inflating: PFoodReq/data/glove.840B.300d.txt  \n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "HHu9fAHjF0BG"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install rapidfuzz"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1hehUTqlza0a",
+        "outputId": "3bd317ab-0043-4dbe-d7d6-6dd3f10ef784"
+      },
+      "execution_count": 34,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: rapidfuzz in /usr/local/lib/python3.10/dist-packages (0.3.0)\n",
+            "Requirement already satisfied: pybind11>=2.4 in /usr/local/lib/python3.10/dist-packages (from rapidfuzz) (2.13.6)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import nltk\n",
+        "nltk.download('punkt')\n",
+        "nltk.download('punkt_tab')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dJTAbaGKzmxX",
+        "outputId": "00fdcf45-c956-46e0-b443-cf2dc6111ae9"
+      },
+      "execution_count": 35,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[nltk_data] Downloading package punkt to /root/nltk_data...\n",
+            "[nltk_data]   Package punkt is already up-to-date!\n",
+            "[nltk_data] Downloading package punkt_tab to /root/nltk_data...\n",
+            "[nltk_data]   Package punkt_tab is already up-to-date!\n"
+          ]
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "True"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 35
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "! python /content/PFoodReq/BAMnet/src/build_all_data.py -data_dir /content/PFoodReq/data/kbqa_data/ -kb_path /content/PFoodReq/data/recipe_kg/recipe_kg.json -out_dir /content/PFoodReq/BAMnet/data/kbqa"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RRQxcfQ3yTW2",
+        "outputId": "27f0ed00-6ea2-4e07-f55c-e9ff6f5cd26d"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Using pre-built vocabs stored in /content/PFoodReq/BAMnet/data/kbqa\n",
+            "Saved data to /content/PFoodReq/BAMnet/data/kbqa/train(valid)_vec.json\n",
+            "Runtime: 4686.340743785s\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/build_pretrained_w2v.py -emb /content/PFoodReq/data/glove.840B.300d.txt -data_dir /content/PFoodReq/BAMnet/data/kbqa/ -out /content/PFoodReq/BAMnet/data/kbqa/glove_pretrained_300d_w2v.npy\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ONncnKbazNpw",
+        "outputId": "277c344f-79c4-49ea-a312-421ba7914f1d"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pretrained word embeddings hit ratio: 0.8852265504403887\n",
+            "saved pretrained word embeddings to /content/PFoodReq/BAMnet/data/kbqa/glove_pretrained_300d_w2v.npy\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "! python /content/PFoodReq/BAMnet/src/build_all_data.py -data_dir /content/PFoodReq/data/kbqa_data -kb_path /content/PFoodReq/data/recipe_kg/recipe_kg.json -out_dir /content/PFoodReq/BAMnet/data/kbqa_no_ka  --no_kg_augmentation\n",
+        "\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "o-neeRV10uxH",
+        "outputId": "e9a98e1b-0913-4641-9c37-bb3aaff16c57"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Using pre-built vocabs stored in /content/PFoodReq/BAMnet/data/kbqa_no_ka\n",
+            "[('labor-day', 100.0, 0)]\n",
+            "Traceback (most recent call last):\n",
+            "  File \"/content/PFoodReq/BAMnet/src/build_all_data.py\", line 63, in <module>\n",
+            "    train_vec = build_all_data(train_data, kb, entity2id, entityType2id, relation2id, vocab2id, preferred_ans_type=preferred_ans_type, question_field=question_field, kg_augmentation=kg_augmentation)\n",
+            "  File \"/content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\", line 278, in build_all_data\n",
+            "    query, tmp_topic_men = delex_query_topic_ent(query, topic_key_name, each['entities'])\n",
+            "  File \"/content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\", line 154, in delex_query_topic_ent\n",
+            "    for (token, score) in ret:\n",
+            "ValueError: too many values to unpack (expected 2)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/build_pretrained_w2v.py -emb /content/PFoodReq/data/glove.840B.300d.txt -data_dir /content/PFoodReq/BAMnet/data/kbqa_no_ka/ -out /content/PFoodReq/BAMnet/data/kbqa_no_ka/glove_pretrained_300d_w2v.npy"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "78c1AUiv1XK8",
+        "outputId": "3b82d26d-f4e4-4ce4-f875-20cfa63884d6"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pretrained word embeddings hit ratio: 0.8852265504403887\n",
+            "saved pretrained word embeddings to /content/PFoodReq/BAMnet/data/kbqa_no_ka/glove_pretrained_300d_w2v.npy\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/build_all_data.py -data_dir /content/PFoodReq/data/kbqa_data/ -kb_path /content/PFoodReq/data/recipe_kg/recipe_kg.json -out_dir /content/PFoodReq/BAMnet/data/kbqa_no_qe --no_query_expansion"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ID5E0o1Y1-E0",
+        "outputId": "e293e62d-dd02-41df-fe8f-914a4d7c38c2"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "# of used_kbkeys: 218\n",
+            "Num of entity_types: 7\n",
+            "Num of relations: 11\n",
+            "Num of vocabs: 10981\n",
+            "Traceback (most recent call last):\n",
+            "  File \"/content/PFoodReq/BAMnet/src/build_all_data.py\", line 63, in <module>\n",
+            "    train_vec = build_all_data(train_data, kb, entity2id, entityType2id, relation2id, vocab2id, preferred_ans_type=preferred_ans_type, question_field=question_field, kg_augmentation=kg_augmentation)\n",
+            "  File \"/content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\", line 277, in build_all_data\n",
+            "    query, tmp_topic_men = delex_query_topic_ent(query, topic_key_name, each['entities'])\n",
+            "  File \"/content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\", line 153, in delex_query_topic_ent\n",
+            "    for token, score in ret:\n",
+            "ValueError: too many values to unpack (expected 2)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/build_pretrained_w2v.py -emb /content/PFoodReq/data/glove.840B.300d.txt -data_dir /content/PFoodReq/BAMnet/data/kbqa_no_qe/ -out /content/PFoodReq/BAMnet/data/kbqa_no_qe/glove_pretrained_300d_w2v.npy"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xeatH73g2iPf",
+        "outputId": "85addcb0-f75c-45a5-9641-0287baf13a06"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pretrained word embeddings hit ratio: 0.885074219105728\n",
+            "saved pretrained word embeddings to /content/PFoodReq/BAMnet/data/kbqa_no_qe/glove_pretrained_300d_w2v.npy\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/build_all_data.py -data_dir /content/PFoodReq/data/kbqa_data/ -kb_path /content/PFoodReq/data/recipe_kg/recipe_kg.json -out_dir /content/PFoodReq/BAMnet/data/kbqa_no_qe_ka --no_query_expansion --no_kg_augmentation"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Lj6trd1x3Czr",
+        "outputId": "1ba459f2-8230-442d-9b87-ce2ed0924214"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "# of used_kbkeys: 218\n",
+            "Num of entity_types: 7\n",
+            "Num of relations: 11\n",
+            "Num of vocabs: 10981\n",
+            "Traceback (most recent call last):\n",
+            "  File \"/content/PFoodReq/BAMnet/src/build_all_data.py\", line 63, in <module>\n",
+            "    train_vec = build_all_data(train_data, kb, entity2id, entityType2id, relation2id, vocab2id, preferred_ans_type=preferred_ans_type, question_field=question_field, kg_augmentation=kg_augmentation)\n",
+            "  File \"/content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\", line 277, in build_all_data\n",
+            "    query, tmp_topic_men = delex_query_topic_ent(query, topic_key_name, each['entities'])\n",
+            "  File \"/content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\", line 153, in delex_query_topic_ent\n",
+            "    for token, score in ret:\n",
+            "ValueError: too many values to unpack (expected 2)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/build_pretrained_w2v.py -emb /content/PFoodReq/data/glove.840B.300d.txt -data_dir /content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/ -out /content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/glove_pretrained_300d_w2v.npy"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "5e53EGfB3h58",
+        "outputId": "ba50a5da-9cc3-4871-a63c-b6d94e460a2a"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Pretrained word embeddings hit ratio: 0.885074219105728\n",
+            "saved pretrained word embeddings to /content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/glove_pretrained_300d_w2v.npy\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip uninstall pyyaml"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "p4mPv52m5h8s",
+        "outputId": "7d4c0163-c83b-414a-d58b-c6b538d329a1"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Found existing installation: PyYAML 6.0.2\n",
+            "Uninstalling PyYAML-6.0.2:\n",
+            "  Would remove:\n",
+            "    /usr/local/lib/python3.10/dist-packages/PyYAML-6.0.2.dist-info/*\n",
+            "    /usr/local/lib/python3.10/dist-packages/_yaml/*\n",
+            "    /usr/local/lib/python3.10/dist-packages/yaml/*\n",
+            "Proceed (Y/n)? \u001b[31m  ERROR: Operation cancelled by user\u001b[0m\u001b[31m\n",
+            "\u001b[0m"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install pyyaml"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hNRQCx8c5qZb",
+        "outputId": "c0f805f6-ec19-40c1-c475-d1cf8c11559e"
+      },
+      "execution_count": 31,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: pyyaml in /usr/local/lib/python3.10/dist-packages (6.0.2)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/train.py -config /content/PFoodReq/BAMnet/src/config/pfoodreq.yml"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "U59wUDfs36bB",
+        "outputId": "587857c7-bdf9-4ebb-ec96-a825e3c31caf"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "**************** MODEL CONFIGURATION ****************\n",
+            "ans_ctx_entity_bow_size  -->   16\n",
+            "ans_enc_dropout          -->   0.2\n",
+            "ans_path_bow_size        -->   6\n",
+            "ans_path_size            -->   2\n",
+            "ans_type_bow_size        -->   6\n",
+            "attention                -->   add\n",
+            "batch_size               -->   32\n",
+            "constraint_mark_emb      -->   40\n",
+            "data_dir                 -->   /content/PFoodReq/BAMnet/data/kbqa\n",
+            "fix_word_emb             -->   False\n",
+            "gpu                      -->   0\n",
+            "grad_accumulated_steps   -->   1\n",
+            "hidden_size              -->   128\n",
+            "kb_path                  -->   /content/PFoodReq/data/recipe_kg/recipe_kg.json\n",
+            "learning_rate            -->   0.001\n",
+            "margin                   -->   1\n",
+            "mem_size                 -->   96\n",
+            "model_file               -->   ../runs/kbqa/pfoodreq_ent_mark_40.model\n",
+            "name                     -->   kbqa\n",
+            "no_cuda                  -->   False\n",
+            "no_filter_answer_type    -->   False\n",
+            "num_ent_types            -->   7\n",
+            "num_epochs               -->   100\n",
+            "num_hops                 -->   1\n",
+            "num_query_words          -->   10\n",
+            "num_relations            -->   11\n",
+            "o_embed_size             -->   128\n",
+            "pre_word2vec             -->   /content/PFoodReq/BAMnet/data/kbqa/glove_pretrained_300d_w2v.npy\n",
+            "que_enc_dropout          -->   0.3\n",
+            "query_size               -->   64\n",
+            "test_batch_size          -->   1\n",
+            "test_data                -->   test_vec.json\n",
+            "test_margin              -->   [0.9]\n",
+            "test_raw_data            -->   test_qas.json\n",
+            "train_data               -->   train_vec.json\n",
+            "use_entity_name          -->   False\n",
+            "valid_data               -->   valid_vec.json\n",
+            "valid_patience           -->   10\n",
+            "vocab_embed_size         -->   300\n",
+            "vocab_size               -->   11013\n",
+            "word_emb_dropout         -->   0.3\n",
+            "**************** MODEL CONFIGURATION ****************\n",
+            "\n",
+            "query_size: 56, cand_ans_size: 2646, cand_ans_bows_size: 1, cand_ans_type_bows_size: 2, cand_ans_types_size: 1, cand_ans_path_bows_size: 2, cand_ans_paths_size: 1, cand_ans_ctx_entity_bows_size: 15, cand_ans_topic_key_ent_types_size: 1\n",
+            "\n",
+            "query_size: 57, cand_ans_size: 2646, cand_ans_bows_size: 1, cand_ans_type_bows_size: 2, cand_ans_types_size: 1, cand_ans_path_bows_size: 2, cand_ans_paths_size: 1, cand_ans_ctx_entity_bows_size: 15, cand_ans_topic_key_ent_types_size: 1\n",
+            "[ Using pretrained word embeddings ]\n",
+            "[ Using constraint modelling ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using self-attention on question encoder ]\n",
+            "[ Using 1-hop memory update ]\n",
+            "/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:60: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.\n",
+            "  warnings.warn(\n",
+            "Training size: 4605, Validation size: 1535\n",
+            "/content/PFoodReq/BAMnet/src/core/bamnet/bamnet.py:215: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:278.)\n",
+            "  query_marks = to_cuda(torch.LongTensor(xs[5]), self.opt['cuda'])\n",
+            "Epoch 1/100: Runtime: 5252s, Train loss: 1.379, valid loss: 0.8637, valid F1: 0.3199\n",
+            "Saved model to ../runs/kbqa/pfoodreq_ent_mark_40.model\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "print('hello')\n"
+      ],
+      "metadata": {
+        "id": "Fw29vlT54_rG",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "6f8045aa-b8b3-478f-ba95-1cd48de7d0eb"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "hello\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!tar -xvzf /PFoodReq.tar.gz -C /"
+      ],
+      "metadata": {
+        "id": "rmk_ZPMubEIy",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "d7e288d1-6a5d-45e6-dc29-d7f16ed710d5"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "content/PFoodReq/\n",
+            "content/PFoodReq/README.md\n",
+            "content/PFoodReq/data_builder/\n",
+            "content/PFoodReq/data_builder/src/\n",
+            "content/PFoodReq/data_builder/src/utils/\n",
+            "content/PFoodReq/data_builder/src/utils/__init__.py\n",
+            "content/PFoodReq/data_builder/src/utils/__pycache__/\n",
+            "content/PFoodReq/data_builder/src/utils/__pycache__/io_utils.cpython-310.pyc\n",
+            "content/PFoodReq/data_builder/src/utils/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/data_builder/src/utils/io_utils.py\n",
+            "content/PFoodReq/data_builder/src/generate_all_qa.py\n",
+            "content/PFoodReq/data_builder/src/config/\n",
+            "content/PFoodReq/data_builder/src/config/__init__.py\n",
+            "content/PFoodReq/data_builder/src/config/__pycache__/\n",
+            "content/PFoodReq/data_builder/src/config/__pycache__/data_config.cpython-310.pyc\n",
+            "content/PFoodReq/data_builder/src/config/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/data_builder/src/config/data_config.py\n",
+            "content/PFoodReq/requirements.txt\n",
+            "content/PFoodReq/BAMnet/\n",
+            "content/PFoodReq/BAMnet/src/\n",
+            "content/PFoodReq/BAMnet/src/run_online.py\n",
+            "content/PFoodReq/BAMnet/src/build_all_data.py\n",
+            "content/PFoodReq/BAMnet/src/eval.py\n",
+            "content/PFoodReq/BAMnet/src/build_pretrained_w2v.py\n",
+            "content/PFoodReq/BAMnet/src/core/\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/utils.py\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/bamnet.py\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/__pycache__/modules.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/__pycache__/bamnet.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/__pycache__/utils.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bamnet/modules.py\n",
+            "content/PFoodReq/BAMnet/src/core/utils/\n",
+            "content/PFoodReq/BAMnet/src/core/utils/utils.py\n",
+            "content/PFoodReq/BAMnet/src/core/utils/metrics.py\n",
+            "content/PFoodReq/BAMnet/src/core/utils/generic_utils.py\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__pycache__/utils.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__pycache__/data_utils.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__pycache__/metrics.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/utils/__pycache__/generic_utils.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/utils/data_utils.py\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/matchnn.py\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/__pycache__/modules.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/__pycache__/matchnn.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/matchnn/modules.py\n",
+            "content/PFoodReq/BAMnet/src/core/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/__pycache__/config.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/kbqa.py\n",
+            "content/PFoodReq/BAMnet/src/core/config.py\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/utils.py\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/foodkg/\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/foodkg/build_data.py\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/foodkg/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/foodkg/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/foodkg/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/foodkg/__pycache__/build_data.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/__pycache__/utils.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/build_data/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/recipe_similarity.py\n",
+            "content/PFoodReq/BAMnet/src/core/bow/\n",
+            "content/PFoodReq/BAMnet/src/core/bow/pbow.py\n",
+            "content/PFoodReq/BAMnet/src/core/bow/bow.py\n",
+            "content/PFoodReq/BAMnet/src/core/bow/__init__.py\n",
+            "content/PFoodReq/BAMnet/src/core/bow/__pycache__/\n",
+            "content/PFoodReq/BAMnet/src/core/bow/__pycache__/modules.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bow/__pycache__/bow.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bow/__pycache__/pbow.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bow/__pycache__/__init__.cpython-310.pyc\n",
+            "content/PFoodReq/BAMnet/src/core/bow/modules.py\n",
+            "content/PFoodReq/BAMnet/src/train.py\n",
+            "content/PFoodReq/BAMnet/src/config/\n",
+            "content/PFoodReq/BAMnet/src/config/pfoodreq_no_cm.yml\n",
+            "content/PFoodReq/BAMnet/src/config/bow.yml\n",
+            "content/PFoodReq/BAMnet/src/config/matchnn.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pbow.yml\n",
+            "content/PFoodReq/BAMnet/src/config/bamnet.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pfoodreq.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pfoodreq_no_qe.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pfoodreq_on_sim_test_set.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pmatchnn.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pfoodreq_no_ka.yml\n",
+            "content/PFoodReq/BAMnet/src/config/pfoodreq_similar_recipes.yml\n",
+            "content/PFoodReq/BAMnet/data/\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe/\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe/vocab2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe/entity2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe/relation2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe/glove_pretrained_300d_w2v.npy\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe/entityType2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_ka/\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_ka/vocab2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_ka/entity2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_ka/relation2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_ka/glove_pretrained_300d_w2v.npy\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_ka/entityType2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa/\n",
+            "content/PFoodReq/BAMnet/data/kbqa/vocab2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa/.built\n",
+            "content/PFoodReq/BAMnet/data/kbqa/entity2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa/train_vec.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa/relation2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa/valid_vec.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa/glove_pretrained_300d_w2v.npy\n",
+            "content/PFoodReq/BAMnet/data/kbqa/entityType2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/vocab2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/entity2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/relation2id.json\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/glove_pretrained_300d_w2v.npy\n",
+            "content/PFoodReq/BAMnet/data/kbqa_no_qe_ka/entityType2id.json\n",
+            "content/PFoodReq/images/\n",
+            "content/PFoodReq/images/arch.png\n",
+            "content/PFoodReq/.gitignore\n",
+            "content/PFoodReq/LICENSE\n",
+            "content/PFoodReq/data/\n",
+            "content/PFoodReq/data/.ipynb_checkpoints/\n",
+            "content/PFoodReq/data/PFoodReq-Data/\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/test_qas_090820.json\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/new_reciptor_507834_tuned_emb.pkl\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/similar_recipes.json\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/name_foodkgid_recipe1Mid_foodcomurl_mapping.tab\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/dish_info_map.json\n",
+            "content/PFoodReq/data/PFoodReq-Data/kbqa_data/test_qas_150820.json\n",
+            "content/PFoodReq/data/PFoodReq-Data/recipe_kg/\n",
+            "content/PFoodReq/data/PFoodReq-Data/recipe_kg/recipe_kg.json\n",
+            "content/PFoodReq/data/kbqa_data/\n",
+            "content/PFoodReq/data/kbqa_data/valid_qas.json\n",
+            "content/PFoodReq/data/kbqa_data/test_qas.json\n",
+            "content/PFoodReq/data/kbqa_data/test_qas_090820.json\n",
+            "content/PFoodReq/data/kbqa_data/new_reciptor_507834_tuned_emb.pkl\n",
+            "content/PFoodReq/data/kbqa_data/similar_recipes.json\n",
+            "content/PFoodReq/data/kbqa_data/train_qas.json\n",
+            "content/PFoodReq/data/kbqa_data/name_foodkgid_recipe1Mid_foodcomurl_mapping.tab\n",
+            "content/PFoodReq/data/kbqa_data/dish_info_map.json\n",
+            "content/PFoodReq/data/kbqa_data/test_qas_150820.json\n",
+            "content/PFoodReq/data/glove.840B.300d.txt\n",
+            "content/PFoodReq/data/recipe_kg/\n",
+            "content/PFoodReq/data/recipe_kg/recipe_kg.json\n",
+            "content/PFoodReq/.git/\n",
+            "content/PFoodReq/.git/logs/\n",
+            "content/PFoodReq/.git/logs/HEAD\n",
+            "content/PFoodReq/.git/logs/refs/\n",
+            "content/PFoodReq/.git/logs/refs/remotes/\n",
+            "content/PFoodReq/.git/logs/refs/remotes/origin/\n",
+            "content/PFoodReq/.git/logs/refs/remotes/origin/HEAD\n",
+            "content/PFoodReq/.git/logs/refs/heads/\n",
+            "content/PFoodReq/.git/logs/refs/heads/master\n",
+            "content/PFoodReq/.git/info/\n",
+            "content/PFoodReq/.git/info/exclude\n",
+            "content/PFoodReq/.git/branches/\n",
+            "content/PFoodReq/.git/description\n",
+            "content/PFoodReq/.git/HEAD\n",
+            "content/PFoodReq/.git/hooks/\n",
+            "content/PFoodReq/.git/hooks/push-to-checkout.sample\n",
+            "content/PFoodReq/.git/hooks/commit-msg.sample\n",
+            "content/PFoodReq/.git/hooks/update.sample\n",
+            "content/PFoodReq/.git/hooks/pre-commit.sample\n",
+            "content/PFoodReq/.git/hooks/pre-rebase.sample\n",
+            "content/PFoodReq/.git/hooks/prepare-commit-msg.sample\n",
+            "content/PFoodReq/.git/hooks/pre-receive.sample\n",
+            "content/PFoodReq/.git/hooks/pre-applypatch.sample\n",
+            "content/PFoodReq/.git/hooks/pre-push.sample\n",
+            "content/PFoodReq/.git/hooks/fsmonitor-watchman.sample\n",
+            "content/PFoodReq/.git/hooks/post-update.sample\n",
+            "content/PFoodReq/.git/hooks/pre-merge-commit.sample\n",
+            "content/PFoodReq/.git/hooks/applypatch-msg.sample\n",
+            "content/PFoodReq/.git/refs/\n",
+            "content/PFoodReq/.git/refs/remotes/\n",
+            "content/PFoodReq/.git/refs/remotes/origin/\n",
+            "content/PFoodReq/.git/refs/remotes/origin/HEAD\n",
+            "content/PFoodReq/.git/refs/heads/\n",
+            "content/PFoodReq/.git/refs/heads/master\n",
+            "content/PFoodReq/.git/refs/tags/\n",
+            "content/PFoodReq/.git/objects/\n",
+            "content/PFoodReq/.git/objects/info/\n",
+            "content/PFoodReq/.git/objects/pack/\n",
+            "content/PFoodReq/.git/objects/pack/pack-0e2e8d1235018ed65e6729b3fe1955386b9322fe.pack\n",
+            "content/PFoodReq/.git/objects/pack/pack-0e2e8d1235018ed65e6729b3fe1955386b9322fe.idx\n",
+            "content/PFoodReq/.git/index\n",
+            "content/PFoodReq/.git/config\n",
+            "content/PFoodReq/.git/packed-refs\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import shutil"
+      ],
+      "metadata": {
+        "id": "jYfCldAk8Kk_"
+      },
+      "execution_count": 2,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "shutil.move(\"drive/MyDrive/PFoodReq.tar.gz\", \"/\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        },
+        "id": "M1AVkKvw8BZQ",
+        "outputId": "a466f30c-0be8-4067-b542-6704a3d592ae"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'/PFoodReq.tar.gz'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 3
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "'drive/MyDrive/PFoodReq-Data.zip' -d 'PFoodReq/data/'"
+      ],
+      "metadata": {
+        "id": "4Z0IVVewbkIx"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import torch"
+      ],
+      "metadata": {
+        "id": "MQjwb3d3HxCe"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "pytorch --version"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 141
+        },
+        "id": "TvolYTNqH0NA",
+        "outputId": "ff865eab-f221-4a3c-fa2b-5a851c4d1f4e"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "error",
+          "ename": "NameError",
+          "evalue": "name 'pytorch' is not defined",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-26-192646931fd8>\u001b[0m in \u001b[0;36m<cell line: 1>\u001b[0;34m()\u001b[0m\n\u001b[0;32m----> 1\u001b[0;31m \u001b[0mpytorch\u001b[0m \u001b[0;34m-\u001b[0m\u001b[0;34m-\u001b[0m\u001b[0mversion\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m",
+            "\u001b[0;31mNameError\u001b[0m: name 'pytorch' is not defined"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python /content/PFoodReq/BAMnet/src/run_online.py -config /content/PFoodReq/BAMnet/src/config/pfoodreq.yml"
+      ],
+      "metadata": {
+        "id": "k0a5sHvGH3uU",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "50e6cadb-e960-48c3-a6fb-b03ab11bbc87"
+      },
+      "execution_count": 44,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "2324 samples\n",
+            "[ Using CUDA ]\n",
+            "[ Using pretrained word embeddings ]\n",
+            "[ Using constraint modelling ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using bidirectional lstm encoder ]\n",
+            "[ Using self-attention on question encoder ]\n",
+            "[ Using 1-hop memory update ]\n",
+            "/usr/local/lib/python3.10/dist-packages/torch/optim/lr_scheduler.py:60: UserWarning: The verbose parameter is deprecated. Please use get_last_lr() to access the learning rate.\n",
+            "  warnings.warn(\n",
+            "similarity_augmented_ground_truth_answers: False\n",
+            "augment_similar_dishs: False\n",
+            "similarity_score_ratio: 0.2\n",
+            "ground_truth_answer_ranking_margin: 0.1\n",
+            "test_margin: 0.9\n",
+            "/content/PFoodReq/BAMnet/src/core/bamnet/bamnet.py:249: UserWarning: Creating a tensor from a list of numpy.ndarrays is extremely slow. Please consider converting the list to a single numpy.ndarray with numpy.array() before converting to a tensor. (Triggered internally at ../torch/csrc/utils/tensor_new.cpp:278.)\n",
+            "  query_marks = to_cuda(torch.LongTensor(xs[5]), self.opt['cuda'])\n",
+            "max KBQA scores found in all examples: 0.9393108487129211\n",
+            "min KBQA scores found in all examples: -0.32961153984069824\n",
+            "min similarity distance found in all examples: inf\n",
+            "\n",
+            "Question type: constraint\n",
+            " Recall: 1.0\n",
+            " Precision: 0.016363847724219727\n",
+            " F1: 0.030115114239948435\n",
+            "MAP: 0.01823029646932401\n",
+            "MAP@1: 0.009036144578313253\n",
+            "MAP@3: 0.012323101931535666\n",
+            "MAR: 0.017848752116654695\n",
+            "MAR@1: 0.00682070214286034\n",
+            "MAR@3: 0.01136231180495193\n",
+            "\n",
+            "Question type: overall\n",
+            " Recall: 1.0\n",
+            " Precision: 0.016363847724219727\n",
+            " F1: 0.030115114239948435\n",
+            "\n",
+            "\n",
+            "Saved output file to ../runs/kbqa/pfoodreq_ent_mark_40_test_margin_0.9_similarity_aug_ground_truth_False_aug_similar_dishs_False_ground_truth_ranking_margin_0.1_similarity_score_ratio_0.2_output.json\n",
+            "\n",
+            "Runtime: 2666.946923207s\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install recmetrics"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 1000
+        },
+        "id": "b5QVdensGdj0",
+        "outputId": "fa9c2536-05c1-41fc-afe9-819ba7ceb84b"
+      },
+      "execution_count": 40,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting recmetrics\n",
+            "  Downloading recmetrics-0.1.5-py3-none-any.whl.metadata (904 bytes)\n",
+            "Collecting funcsigs<2.0.0,>=1.0.2 (from recmetrics)\n",
+            "  Downloading funcsigs-1.0.2-py2.py3-none-any.whl.metadata (14 kB)\n",
+            "Requirement already satisfied: ipython<8.0.0,>=7.18.1 in /usr/local/lib/python3.10/dist-packages (from recmetrics) (7.34.0)\n",
+            "Collecting jupyter<2.0.0,>=1.0.0 (from recmetrics)\n",
+            "  Downloading jupyter-1.1.1-py2.py3-none-any.whl.metadata (2.0 kB)\n",
+            "Requirement already satisfied: matplotlib<4.0.0,>=3.3.2 in /usr/local/lib/python3.10/dist-packages (from recmetrics) (3.8.0)\n",
+            "Collecting pandas<2.0.0,>=1.1.3 (from recmetrics)\n",
+            "  Downloading pandas-1.5.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)\n",
+            "Collecting plotly<5.0.0,>=4.11.0 (from recmetrics)\n",
+            "  Downloading plotly-4.14.3-py2.py3-none-any.whl.metadata (7.6 kB)\n",
+            "Collecting pytest-cov<3.0.0,>=2.10.1 (from recmetrics)\n",
+            "  Downloading pytest_cov-2.12.1-py2.py3-none-any.whl.metadata (22 kB)\n",
+            "Requirement already satisfied: scikit-learn<2.0.0,>=1.0.2 in /usr/local/lib/python3.10/dist-packages (from recmetrics) (1.5.2)\n",
+            "Requirement already satisfied: scipy<2.0.0,>=1.5.2 in /usr/local/lib/python3.10/dist-packages (from recmetrics) (1.13.1)\n",
+            "Collecting seaborn<0.12.0,>=0.11.0 (from recmetrics)\n",
+            "  Downloading seaborn-0.11.2-py3-none-any.whl.metadata (2.3 kB)\n",
+            "Collecting twine<5.0.0,>=4.0.0 (from recmetrics)\n",
+            "  Downloading twine-4.0.2-py3-none-any.whl.metadata (3.3 kB)\n",
+            "Requirement already satisfied: setuptools>=18.5 in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (57.5.0)\n",
+            "Collecting jedi>=0.16 (from ipython<8.0.0,>=7.18.1->recmetrics)\n",
+            "  Downloading jedi-0.19.2-py2.py3-none-any.whl.metadata (22 kB)\n",
+            "Requirement already satisfied: decorator in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (4.4.2)\n",
+            "Requirement already satisfied: pickleshare in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (0.7.5)\n",
+            "Requirement already satisfied: traitlets>=4.2 in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (5.7.1)\n",
+            "Requirement already satisfied: prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0 in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (3.0.48)\n",
+            "Requirement already satisfied: pygments in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (2.18.0)\n",
+            "Requirement already satisfied: backcall in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (0.2.0)\n",
+            "Requirement already satisfied: matplotlib-inline in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (0.1.7)\n",
+            "Requirement already satisfied: pexpect>4.3 in /usr/local/lib/python3.10/dist-packages (from ipython<8.0.0,>=7.18.1->recmetrics) (4.9.0)\n",
+            "Requirement already satisfied: notebook in /usr/local/lib/python3.10/dist-packages (from jupyter<2.0.0,>=1.0.0->recmetrics) (6.5.5)\n",
+            "Requirement already satisfied: jupyter-console in /usr/local/lib/python3.10/dist-packages (from jupyter<2.0.0,>=1.0.0->recmetrics) (6.1.0)\n",
+            "Requirement already satisfied: nbconvert in /usr/local/lib/python3.10/dist-packages (from jupyter<2.0.0,>=1.0.0->recmetrics) (7.16.4)\n",
+            "Requirement already satisfied: ipykernel in /usr/local/lib/python3.10/dist-packages (from jupyter<2.0.0,>=1.0.0->recmetrics) (5.5.6)\n",
+            "Requirement already satisfied: ipywidgets in /usr/local/lib/python3.10/dist-packages (from jupyter<2.0.0,>=1.0.0->recmetrics) (7.7.1)\n",
+            "Collecting jupyterlab (from jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyterlab-4.3.3-py3-none-any.whl.metadata (16 kB)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (1.3.1)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (0.12.1)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (4.55.3)\n",
+            "Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (1.4.7)\n",
+            "Requirement already satisfied: numpy<2,>=1.21 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (1.24.4)\n",
+            "Requirement already satisfied: packaging>=20.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (24.2)\n",
+            "Requirement already satisfied: pillow>=6.2.0 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (11.0.0)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (3.2.0)\n",
+            "Requirement already satisfied: python-dateutil>=2.7 in /usr/local/lib/python3.10/dist-packages (from matplotlib<4.0.0,>=3.3.2->recmetrics) (2.8.2)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.10/dist-packages (from pandas<2.0.0,>=1.1.3->recmetrics) (2024.2)\n",
+            "Collecting retrying>=1.3.3 (from plotly<5.0.0,>=4.11.0->recmetrics)\n",
+            "  Downloading retrying-1.3.4-py3-none-any.whl.metadata (6.9 kB)\n",
+            "Requirement already satisfied: six in /usr/local/lib/python3.10/dist-packages (from plotly<5.0.0,>=4.11.0->recmetrics) (1.17.0)\n",
+            "Requirement already satisfied: pytest>=4.6 in /usr/local/lib/python3.10/dist-packages (from pytest-cov<3.0.0,>=2.10.1->recmetrics) (8.3.4)\n",
+            "Collecting coverage>=5.2.1 (from pytest-cov<3.0.0,>=2.10.1->recmetrics)\n",
+            "  Downloading coverage-7.6.9-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (8.2 kB)\n",
+            "Requirement already satisfied: toml in /usr/local/lib/python3.10/dist-packages (from pytest-cov<3.0.0,>=2.10.1->recmetrics) (0.10.2)\n",
+            "Requirement already satisfied: joblib>=1.2.0 in /usr/local/lib/python3.10/dist-packages (from scikit-learn<2.0.0,>=1.0.2->recmetrics) (1.4.2)\n",
+            "Requirement already satisfied: threadpoolctl>=3.1.0 in /usr/local/lib/python3.10/dist-packages (from scikit-learn<2.0.0,>=1.0.2->recmetrics) (3.5.0)\n",
+            "Collecting pkginfo>=1.8.1 (from twine<5.0.0,>=4.0.0->recmetrics)\n",
+            "  Downloading pkginfo-1.12.0-py3-none-any.whl.metadata (12 kB)\n",
+            "Collecting readme-renderer>=35.0 (from twine<5.0.0,>=4.0.0->recmetrics)\n",
+            "  Downloading readme_renderer-44.0-py3-none-any.whl.metadata (2.8 kB)\n",
+            "Requirement already satisfied: requests>=2.20 in /usr/local/lib/python3.10/dist-packages (from twine<5.0.0,>=4.0.0->recmetrics) (2.32.3)\n",
+            "Requirement already satisfied: requests-toolbelt!=0.9.0,>=0.8.0 in /usr/local/lib/python3.10/dist-packages (from twine<5.0.0,>=4.0.0->recmetrics) (1.0.0)\n",
+            "Requirement already satisfied: urllib3>=1.26.0 in /usr/local/lib/python3.10/dist-packages (from twine<5.0.0,>=4.0.0->recmetrics) (2.2.3)\n",
+            "Requirement already satisfied: importlib-metadata>=3.6 in /usr/local/lib/python3.10/dist-packages (from twine<5.0.0,>=4.0.0->recmetrics) (8.5.0)\n",
+            "Requirement already satisfied: keyring>=15.1 in /usr/lib/python3/dist-packages (from twine<5.0.0,>=4.0.0->recmetrics) (23.5.0)\n",
+            "Collecting rfc3986>=1.4.0 (from twine<5.0.0,>=4.0.0->recmetrics)\n",
+            "  Downloading rfc3986-2.0.0-py2.py3-none-any.whl.metadata (6.6 kB)\n",
+            "Requirement already satisfied: rich>=12.0.0 in /usr/local/lib/python3.10/dist-packages (from twine<5.0.0,>=4.0.0->recmetrics) (13.9.4)\n",
+            "Requirement already satisfied: zipp>=3.20 in /usr/local/lib/python3.10/dist-packages (from importlib-metadata>=3.6->twine<5.0.0,>=4.0.0->recmetrics) (3.21.0)\n",
+            "Requirement already satisfied: parso<0.9.0,>=0.8.4 in /usr/local/lib/python3.10/dist-packages (from jedi>=0.16->ipython<8.0.0,>=7.18.1->recmetrics) (0.8.4)\n",
+            "Requirement already satisfied: ptyprocess>=0.5 in /usr/local/lib/python3.10/dist-packages (from pexpect>4.3->ipython<8.0.0,>=7.18.1->recmetrics) (0.7.0)\n",
+            "Requirement already satisfied: wcwidth in /usr/local/lib/python3.10/dist-packages (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->ipython<8.0.0,>=7.18.1->recmetrics) (0.2.13)\n",
+            "Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /usr/local/lib/python3.10/dist-packages (from pytest>=4.6->pytest-cov<3.0.0,>=2.10.1->recmetrics) (1.2.2)\n",
+            "Requirement already satisfied: iniconfig in /usr/local/lib/python3.10/dist-packages (from pytest>=4.6->pytest-cov<3.0.0,>=2.10.1->recmetrics) (2.0.0)\n",
+            "Requirement already satisfied: pluggy<2,>=1.5 in /usr/local/lib/python3.10/dist-packages (from pytest>=4.6->pytest-cov<3.0.0,>=2.10.1->recmetrics) (1.5.0)\n",
+            "Requirement already satisfied: tomli>=1 in /usr/local/lib/python3.10/dist-packages (from pytest>=4.6->pytest-cov<3.0.0,>=2.10.1->recmetrics) (2.2.1)\n",
+            "Collecting nh3>=0.2.14 (from readme-renderer>=35.0->twine<5.0.0,>=4.0.0->recmetrics)\n",
+            "  Downloading nh3-0.2.19-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (1.7 kB)\n",
+            "Requirement already satisfied: docutils>=0.21.2 in /usr/local/lib/python3.10/dist-packages (from readme-renderer>=35.0->twine<5.0.0,>=4.0.0->recmetrics) (0.21.2)\n",
+            "Requirement already satisfied: charset-normalizer<4,>=2 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->twine<5.0.0,>=4.0.0->recmetrics) (3.4.0)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->twine<5.0.0,>=4.0.0->recmetrics) (3.10)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.10/dist-packages (from requests>=2.20->twine<5.0.0,>=4.0.0->recmetrics) (2024.8.30)\n",
+            "Requirement already satisfied: markdown-it-py>=2.2.0 in /usr/local/lib/python3.10/dist-packages (from rich>=12.0.0->twine<5.0.0,>=4.0.0->recmetrics) (3.0.0)\n",
+            "Requirement already satisfied: typing-extensions<5.0,>=4.0.0 in /usr/local/lib/python3.10/dist-packages (from rich>=12.0.0->twine<5.0.0,>=4.0.0->recmetrics) (4.12.2)\n",
+            "Requirement already satisfied: ipython-genutils in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (0.2.0)\n",
+            "Requirement already satisfied: jupyter-client in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (6.1.12)\n",
+            "Requirement already satisfied: tornado>=4.2 in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (6.3.3)\n",
+            "Requirement already satisfied: widgetsnbextension~=3.6.0 in /usr/local/lib/python3.10/dist-packages (from ipywidgets->jupyter<2.0.0,>=1.0.0->recmetrics) (3.6.10)\n",
+            "Requirement already satisfied: jupyterlab-widgets>=1.0.0 in /usr/local/lib/python3.10/dist-packages (from ipywidgets->jupyter<2.0.0,>=1.0.0->recmetrics) (3.0.13)\n",
+            "Collecting async-lru>=1.0.0 (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading async_lru-2.0.4-py3-none-any.whl.metadata (4.5 kB)\n",
+            "Requirement already satisfied: httpx>=0.25.0 in /usr/local/lib/python3.10/dist-packages (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (0.28.1)\n",
+            "Collecting ipykernel (from jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading ipykernel-6.29.5-py3-none-any.whl.metadata (6.3 kB)\n",
+            "Requirement already satisfied: jinja2>=3.0.3 in /usr/local/lib/python3.10/dist-packages (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (3.1.4)\n",
+            "Requirement already satisfied: jupyter-core in /usr/local/lib/python3.10/dist-packages (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (5.7.2)\n",
+            "Collecting jupyter-lsp>=2.0.0 (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyter_lsp-2.2.5-py3-none-any.whl.metadata (1.8 kB)\n",
+            "Collecting jupyter-server<3,>=2.4.0 (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyter_server-2.14.2-py3-none-any.whl.metadata (8.4 kB)\n",
+            "Collecting jupyterlab-server<3,>=2.27.1 (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyterlab_server-2.27.3-py3-none-any.whl.metadata (5.9 kB)\n",
+            "Requirement already satisfied: notebook-shim>=0.2 in /usr/local/lib/python3.10/dist-packages (from jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (0.2.4)\n",
+            "Collecting comm>=0.1.1 (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading comm-0.2.2-py3-none-any.whl.metadata (3.7 kB)\n",
+            "Requirement already satisfied: debugpy>=1.6.5 in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (1.8.0)\n",
+            "Requirement already satisfied: nest-asyncio in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (1.6.0)\n",
+            "Requirement already satisfied: psutil in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (5.9.5)\n",
+            "Requirement already satisfied: pyzmq>=24 in /usr/local/lib/python3.10/dist-packages (from ipykernel->jupyter<2.0.0,>=1.0.0->recmetrics) (24.0.1)\n",
+            "Requirement already satisfied: beautifulsoup4 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (4.12.3)\n",
+            "Requirement already satisfied: bleach!=5.0.0 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (6.2.0)\n",
+            "Requirement already satisfied: defusedxml in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (0.7.1)\n",
+            "Requirement already satisfied: jupyterlab-pygments in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (0.3.0)\n",
+            "Requirement already satisfied: markupsafe>=2.0 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (3.0.2)\n",
+            "Requirement already satisfied: mistune<4,>=2.0.3 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (3.0.2)\n",
+            "Requirement already satisfied: nbclient>=0.5.0 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (0.10.1)\n",
+            "Requirement already satisfied: nbformat>=5.7 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (5.10.4)\n",
+            "Requirement already satisfied: pandocfilters>=1.4.1 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (1.5.1)\n",
+            "Requirement already satisfied: tinycss2 in /usr/local/lib/python3.10/dist-packages (from nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (1.4.0)\n",
+            "Requirement already satisfied: argon2-cffi in /usr/local/lib/python3.10/dist-packages (from notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (23.1.0)\n",
+            "Requirement already satisfied: Send2Trash>=1.8.0 in /usr/local/lib/python3.10/dist-packages (from notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (1.8.3)\n",
+            "Requirement already satisfied: terminado>=0.8.3 in /usr/local/lib/python3.10/dist-packages (from notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (0.18.1)\n",
+            "Requirement already satisfied: prometheus-client in /usr/local/lib/python3.10/dist-packages (from notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (0.21.1)\n",
+            "Requirement already satisfied: nbclassic>=0.4.7 in /usr/local/lib/python3.10/dist-packages (from notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (1.1.0)\n",
+            "Requirement already satisfied: webencodings in /usr/local/lib/python3.10/dist-packages (from bleach!=5.0.0->nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (0.5.1)\n",
+            "Requirement already satisfied: anyio in /usr/local/lib/python3.10/dist-packages (from httpx>=0.25.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (3.7.1)\n",
+            "Requirement already satisfied: httpcore==1.* in /usr/local/lib/python3.10/dist-packages (from httpx>=0.25.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (1.0.7)\n",
+            "Requirement already satisfied: h11<0.15,>=0.13 in /usr/local/lib/python3.10/dist-packages (from httpcore==1.*->httpx>=0.25.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (0.14.0)\n",
+            "Requirement already satisfied: platformdirs>=2.5 in /usr/local/lib/python3.10/dist-packages (from jupyter-core->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (4.3.6)\n",
+            "Collecting jupyter-client (from jupyter-console->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyter_client-7.4.9-py3-none-any.whl.metadata (8.5 kB)\n",
+            "Collecting jupyter-events>=0.9.0 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyter_events-0.10.0-py3-none-any.whl.metadata (5.9 kB)\n",
+            "Collecting jupyter-server-terminals>=0.4.4 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading jupyter_server_terminals-0.5.3-py3-none-any.whl.metadata (5.6 kB)\n",
+            "Collecting overrides>=5.0 (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading overrides-7.7.0-py3-none-any.whl.metadata (5.8 kB)\n",
+            "Requirement already satisfied: websocket-client>=1.7 in /usr/local/lib/python3.10/dist-packages (from jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (1.8.0)\n",
+            "Requirement already satisfied: argon2-cffi-bindings in /usr/local/lib/python3.10/dist-packages (from argon2-cffi->notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (21.2.0)\n",
+            "Requirement already satisfied: entrypoints in /usr/local/lib/python3.10/dist-packages (from jupyter-client->jupyter-console->jupyter<2.0.0,>=1.0.0->recmetrics) (0.4)\n",
+            "Requirement already satisfied: babel>=2.10 in /usr/local/lib/python3.10/dist-packages (from jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (2.16.0)\n",
+            "Collecting json5>=0.9.0 (from jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading json5-0.10.0-py3-none-any.whl.metadata (34 kB)\n",
+            "Requirement already satisfied: jsonschema>=4.18.0 in /usr/local/lib/python3.10/dist-packages (from jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (4.23.0)\n",
+            "Requirement already satisfied: mdurl~=0.1 in /usr/local/lib/python3.10/dist-packages (from markdown-it-py>=2.2.0->rich>=12.0.0->twine<5.0.0,>=4.0.0->recmetrics) (0.1.2)\n",
+            "Requirement already satisfied: fastjsonschema>=2.15 in /usr/local/lib/python3.10/dist-packages (from nbformat>=5.7->nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (2.21.1)\n",
+            "Requirement already satisfied: soupsieve>1.2 in /usr/local/lib/python3.10/dist-packages (from beautifulsoup4->nbconvert->jupyter<2.0.0,>=1.0.0->recmetrics) (2.6)\n",
+            "Requirement already satisfied: sniffio>=1.1 in /usr/local/lib/python3.10/dist-packages (from anyio->httpx>=0.25.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (1.3.1)\n",
+            "Requirement already satisfied: attrs>=22.2.0 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=4.18.0->jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (24.2.0)\n",
+            "Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=4.18.0->jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (2024.10.1)\n",
+            "Requirement already satisfied: referencing>=0.28.4 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=4.18.0->jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (0.35.1)\n",
+            "Requirement already satisfied: rpds-py>=0.7.1 in /usr/local/lib/python3.10/dist-packages (from jsonschema>=4.18.0->jupyterlab-server<3,>=2.27.1->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (0.22.3)\n",
+            "Collecting python-json-logger>=2.0.4 (from jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading python_json_logger-3.2.0-py3-none-any.whl.metadata (4.4 kB)\n",
+            "Requirement already satisfied: pyyaml>=5.3 in /usr/local/lib/python3.10/dist-packages (from jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (6.0.2)\n",
+            "Collecting rfc3339-validator (from jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl.metadata (1.5 kB)\n",
+            "Collecting rfc3986-validator>=0.1.1 (from jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading rfc3986_validator-0.1.1-py2.py3-none-any.whl.metadata (1.7 kB)\n",
+            "Requirement already satisfied: cffi>=1.0.1 in /usr/local/lib/python3.10/dist-packages (from argon2-cffi-bindings->argon2-cffi->notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (1.17.1)\n",
+            "Requirement already satisfied: pycparser in /usr/local/lib/python3.10/dist-packages (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi->notebook->jupyter<2.0.0,>=1.0.0->recmetrics) (2.22)\n",
+            "Collecting fqdn (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading fqdn-1.5.1-py3-none-any.whl.metadata (1.4 kB)\n",
+            "Collecting isoduration (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading isoduration-20.11.0-py3-none-any.whl.metadata (5.7 kB)\n",
+            "Requirement already satisfied: jsonpointer>1.13 in /usr/local/lib/python3.10/dist-packages (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (3.0.0)\n",
+            "Collecting uri-template (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading uri_template-1.3.0-py3-none-any.whl.metadata (8.8 kB)\n",
+            "Requirement already satisfied: webcolors>=24.6.0 in /usr/local/lib/python3.10/dist-packages (from jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics) (24.11.1)\n",
+            "Collecting arrow>=0.15.0 (from isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading arrow-1.3.0-py3-none-any.whl.metadata (7.5 kB)\n",
+            "Collecting types-python-dateutil>=2.8.10 (from arrow>=0.15.0->isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.9.0->jupyter-server<3,>=2.4.0->jupyterlab->jupyter<2.0.0,>=1.0.0->recmetrics)\n",
+            "  Downloading types_python_dateutil-2.9.0.20241206-py3-none-any.whl.metadata (2.1 kB)\n",
+            "Downloading recmetrics-0.1.5-py3-none-any.whl (9.3 kB)\n",
+            "Downloading funcsigs-1.0.2-py2.py3-none-any.whl (17 kB)\n",
+            "Downloading jupyter-1.1.1-py2.py3-none-any.whl (2.7 kB)\n",
+            "Downloading pandas-1.5.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.1 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m12.1/12.1 MB\u001b[0m \u001b[31m91.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading plotly-4.14.3-py2.py3-none-any.whl (13.2 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m13.2/13.2 MB\u001b[0m \u001b[31m103.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading pytest_cov-2.12.1-py2.py3-none-any.whl (20 kB)\n",
+            "Downloading seaborn-0.11.2-py3-none-any.whl (292 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m292.8/292.8 kB\u001b[0m \u001b[31m25.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading twine-4.0.2-py3-none-any.whl (36 kB)\n",
+            "Downloading coverage-7.6.9-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl (234 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m235.0/235.0 kB\u001b[0m \u001b[31m21.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading jedi-0.19.2-py2.py3-none-any.whl (1.6 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m1.6/1.6 MB\u001b[0m \u001b[31m70.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading pkginfo-1.12.0-py3-none-any.whl (32 kB)\n",
+            "Downloading readme_renderer-44.0-py3-none-any.whl (13 kB)\n",
+            "Downloading retrying-1.3.4-py3-none-any.whl (11 kB)\n",
+            "Downloading rfc3986-2.0.0-py2.py3-none-any.whl (31 kB)\n",
+            "Downloading jupyterlab-4.3.3-py3-none-any.whl (11.7 MB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m11.7/11.7 MB\u001b[0m \u001b[31m111.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading ipykernel-6.29.5-py3-none-any.whl (117 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m117.2/117.2 kB\u001b[0m \u001b[31m10.6 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading async_lru-2.0.4-py3-none-any.whl (6.1 kB)\n",
+            "Downloading comm-0.2.2-py3-none-any.whl (7.2 kB)\n",
+            "Downloading jupyter_lsp-2.2.5-py3-none-any.whl (69 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m69.1/69.1 kB\u001b[0m \u001b[31m4.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading jupyter_server-2.14.2-py3-none-any.whl (383 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m383.6/383.6 kB\u001b[0m \u001b[31m20.6 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading jupyter_client-7.4.9-py3-none-any.whl (133 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m133.5/133.5 kB\u001b[0m \u001b[31m10.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading jupyterlab_server-2.27.3-py3-none-any.whl (59 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m59.7/59.7 kB\u001b[0m \u001b[31m5.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading nh3-0.2.19-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (748 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m748.3/748.3 kB\u001b[0m \u001b[31m44.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading json5-0.10.0-py3-none-any.whl (34 kB)\n",
+            "Downloading jupyter_events-0.10.0-py3-none-any.whl (18 kB)\n",
+            "Downloading jupyter_server_terminals-0.5.3-py3-none-any.whl (13 kB)\n",
+            "Downloading overrides-7.7.0-py3-none-any.whl (17 kB)\n",
+            "Downloading python_json_logger-3.2.0-py3-none-any.whl (14 kB)\n",
+            "Downloading rfc3986_validator-0.1.1-py2.py3-none-any.whl (4.2 kB)\n",
+            "Downloading rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)\n",
+            "Downloading fqdn-1.5.1-py3-none-any.whl (9.1 kB)\n",
+            "Downloading isoduration-20.11.0-py3-none-any.whl (11 kB)\n",
+            "Downloading uri_template-1.3.0-py3-none-any.whl (11 kB)\n",
+            "Downloading arrow-1.3.0-py3-none-any.whl (66 kB)\n",
+            "\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m66.4/66.4 kB\u001b[0m \u001b[31m5.9 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hDownloading types_python_dateutil-2.9.0.20241206-py3-none-any.whl (14 kB)\n",
+            "Installing collected packages: nh3, funcsigs, uri-template, types-python-dateutil, rfc3986-validator, rfc3986, rfc3339-validator, retrying, readme-renderer, python-json-logger, pkginfo, overrides, json5, jedi, fqdn, coverage, comm, async-lru, pytest-cov, plotly, pandas, jupyter-server-terminals, jupyter-client, arrow, twine, seaborn, isoduration, ipykernel, jupyter-events, jupyter-server, jupyterlab-server, jupyter-lsp, jupyterlab, jupyter, recmetrics\n",
+            "  Attempting uninstall: plotly\n",
+            "    Found existing installation: plotly 5.24.1\n",
+            "    Uninstalling plotly-5.24.1:\n",
+            "      Successfully uninstalled plotly-5.24.1\n",
+            "  Attempting uninstall: pandas\n",
+            "    Found existing installation: pandas 2.2.2\n",
+            "    Uninstalling pandas-2.2.2:\n",
+            "      Successfully uninstalled pandas-2.2.2\n",
+            "  Attempting uninstall: jupyter-client\n",
+            "    Found existing installation: jupyter-client 6.1.12\n",
+            "    Uninstalling jupyter-client-6.1.12:\n",
+            "      Successfully uninstalled jupyter-client-6.1.12\n",
+            "  Attempting uninstall: seaborn\n",
+            "    Found existing installation: seaborn 0.13.2\n",
+            "    Uninstalling seaborn-0.13.2:\n",
+            "      Successfully uninstalled seaborn-0.13.2\n",
+            "  Attempting uninstall: ipykernel\n",
+            "    Found existing installation: ipykernel 5.5.6\n",
+            "    Uninstalling ipykernel-5.5.6:\n",
+            "      Successfully uninstalled ipykernel-5.5.6\n",
+            "  Attempting uninstall: jupyter-server\n",
+            "    Found existing installation: jupyter-server 1.24.0\n",
+            "    Uninstalling jupyter-server-1.24.0:\n",
+            "      Successfully uninstalled jupyter-server-1.24.0\n",
+            "\u001b[31mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n",
+            "arviz 0.20.0 requires setuptools>=60.0.0, but you have setuptools 57.5.0 which is incompatible.\n",
+            "cudf-cu12 24.10.1 requires pandas<2.2.3dev0,>=2.0, but you have pandas 1.5.3 which is incompatible.\n",
+            "google-colab 1.0.0 requires ipykernel==5.5.6, but you have ipykernel 6.29.5 which is incompatible.\n",
+            "google-colab 1.0.0 requires pandas==2.2.2, but you have pandas 1.5.3 which is incompatible.\n",
+            "mizani 0.13.1 requires pandas>=2.2.0, but you have pandas 1.5.3 which is incompatible.\n",
+            "plotnine 0.14.3 requires pandas>=2.2.0, but you have pandas 1.5.3 which is incompatible.\n",
+            "xarray 2024.10.0 requires pandas>=2.1, but you have pandas 1.5.3 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed arrow-1.3.0 async-lru-2.0.4 comm-0.2.2 coverage-7.6.9 fqdn-1.5.1 funcsigs-1.0.2 ipykernel-6.29.5 isoduration-20.11.0 jedi-0.19.2 json5-0.10.0 jupyter-1.1.1 jupyter-client-7.4.9 jupyter-events-0.10.0 jupyter-lsp-2.2.5 jupyter-server-2.14.2 jupyter-server-terminals-0.5.3 jupyterlab-4.3.3 jupyterlab-server-2.27.3 nh3-0.2.19 overrides-7.7.0 pandas-1.5.3 pkginfo-1.12.0 plotly-4.14.3 pytest-cov-2.12.1 python-json-logger-3.2.0 readme-renderer-44.0 recmetrics-0.1.5 retrying-1.3.4 rfc3339-validator-0.1.4 rfc3986-2.0.0 rfc3986-validator-0.1.1 seaborn-0.11.2 twine-4.0.2 types-python-dateutil-2.9.0.20241206 uri-template-1.3.0\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "application/vnd.colab-display-data+json": {
+              "pip_warning": {
+                "packages": [
+                  "pandas"
+                ]
+              },
+              "id": "9532669e984e42daa9a0437c14246c3d"
+            }
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip cache purge"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vnZTlOHhDpaV",
+        "outputId": "7ef4c26c-9554-4479-8f90-1e35a0b0d309"
+      },
+      "execution_count": 13,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Files removed: 10\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!git clone https://github.com/benhamner/Metrics.git\n",
+        "!python Metrics/Python/setup.py install"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Tt6CWZ9FCwnj",
+        "outputId": "03638c90-5315-46fb-fc3c-aae3ab55f35f"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Cloning into 'Metrics'...\n",
+            "remote: Enumerating objects: 1192, done.\u001b[K\n",
+            "remote: Total 1192 (delta 0), reused 0 (delta 0), pack-reused 1192 (from 1)\u001b[K\n",
+            "Receiving objects: 100% (1192/1192), 329.79 KiB | 14.34 MiB/s, done.\n",
+            "Resolving deltas: 100% (480/480), done.\n",
+            "error in ml_metrics setup command: use_2to3 is invalid.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!python Metrics/Python/setup.py install"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Cf4KcW8EESaK",
+        "outputId": "476844d6-2b89-43da-d19c-d5aa28605622"
+      },
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "error in ml_metrics setup command: use_2to3 is invalid.\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install \"setuptools<58.0.0\""
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 376
+        },
+        "id": "KGib8mx1GTFs",
+        "outputId": "611ae05d-9256-4664-a790-69ec8676fcc3"
+      },
+      "execution_count": 37,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting setuptools<58.0.0\n",
+            "  Downloading setuptools-57.5.0-py3-none-any.whl.metadata (4.9 kB)\n",
+            "Downloading setuptools-57.5.0-py3-none-any.whl (819 kB)\n",
+            "\u001b[?25l   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m0.0/819.3 kB\u001b[0m \u001b[31m?\u001b[0m eta \u001b[36m-:--:--\u001b[0m\r\u001b[2K   \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m819.3/819.3 kB\u001b[0m \u001b[31m27.0 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hInstalling collected packages: setuptools\n",
+            "  Attempting uninstall: setuptools\n",
+            "    Found existing installation: setuptools 75.1.0\n",
+            "    Uninstalling setuptools-75.1.0:\n",
+            "      Successfully uninstalled setuptools-75.1.0\n",
+            "\u001b[31mERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n",
+            "ipython 7.34.0 requires jedi>=0.16, which is not installed.\n",
+            "arviz 0.20.0 requires setuptools>=60.0.0, but you have setuptools 57.5.0 which is incompatible.\n",
+            "pytensor 2.26.4 requires setuptools>=59.0.0, but you have setuptools 57.5.0 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed setuptools-57.5.0\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "application/vnd.colab-display-data+json": {
+              "pip_warning": {
+                "packages": [
+                  "_distutils_hack",
+                  "setuptools"
+                ]
+              },
+              "id": "d07109fc9c89494f8de87ec582d69971"
+            }
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install ml_metrics"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "yTYoQ9sREZnE",
+        "outputId": "2941236b-e9cc-4279-bbec-adcf08e2cf8d"
+      },
+      "execution_count": 38,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting ml_metrics\n",
+            "  Using cached ml_metrics-0.1.4.tar.gz (5.0 kB)\n",
+            "  Preparing metadata (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.10/dist-packages (from ml_metrics) (1.24.4)\n",
+            "Requirement already satisfied: pandas in /usr/local/lib/python3.10/dist-packages (from ml_metrics) (2.2.2)\n",
+            "Requirement already satisfied: python-dateutil>=2.8.2 in /usr/local/lib/python3.10/dist-packages (from pandas->ml_metrics) (2.8.2)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.10/dist-packages (from pandas->ml_metrics) (2024.2)\n",
+            "Requirement already satisfied: tzdata>=2022.7 in /usr/local/lib/python3.10/dist-packages (from pandas->ml_metrics) (2024.2)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.10/dist-packages (from python-dateutil>=2.8.2->pandas->ml_metrics) (1.17.0)\n",
+            "Building wheels for collected packages: ml_metrics\n",
+            "  Building wheel for ml_metrics (setup.py) ... \u001b[?25l\u001b[?25hdone\n",
+            "  Created wheel for ml_metrics: filename=ml_metrics-0.1.4-py3-none-any.whl size=7845 sha256=5b31e4c48e108181815139a7279814dc278025008f6a463f6cd5960f140bc976\n",
+            "  Stored in directory: /root/.cache/pip/wheels/45/c8/f0/9fbd1ee49c2b66bf0a33f7c73173dc73edf202c81bf7eb1002\n",
+            "Successfully built ml_metrics\n",
+            "Installing collected packages: ml_metrics\n",
+            "Successfully installed ml_metrics-0.1.4\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [],
+      "metadata": {
+        "id": "WeZDlVuACoNB"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!tar -xzvf PFoodReq.tar.gz"
+      ],
+      "metadata": {
+        "id": "W_VR5dsXSvnM"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!tar -czf \"PFoodReq.tar.gz\" \"/content/PFoodReq/\""
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "WO92Hfc4S0cF",
+        "outputId": "98d85a00-12db-4b65-e39f-158a847aed53"
+      },
+      "execution_count": 45,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "tar: Removing leading `/' from member names\n",
+            "^C\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!cp \"/content/PFoodReq.tar.gz\" \"/content/drive/My Drive/PFoodReq.tar.gz\""
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "8Gomlc0hS4lM",
+        "outputId": "a0fbf028-53dc-43a3-b12b-40e0b982f40f"
+      },
+      "execution_count": 46,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "^C\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!git init"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "S4pwJ8ozWUAk",
+        "outputId": "4e152864-2896-4e95-9cdd-cc9f23d08ad1"
+      },
+      "execution_count": 47,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "\u001b[33mhint: Using 'master' as the name for the initial branch. This default branch name\u001b[m\n",
+            "\u001b[33mhint: is subject to change. To configure the initial branch name to use in all\u001b[m\n",
+            "\u001b[33mhint: of your new repositories, which will suppress this warning, call:\u001b[m\n",
+            "\u001b[33mhint: \u001b[m\n",
+            "\u001b[33mhint: \tgit config --global init.defaultBranch <name>\u001b[m\n",
+            "\u001b[33mhint: \u001b[m\n",
+            "\u001b[33mhint: Names commonly chosen instead of 'master' are 'main', 'trunk' and\u001b[m\n",
+            "\u001b[33mhint: 'development'. The just-created branch can be renamed via this command:\u001b[m\n",
+            "\u001b[33mhint: \u001b[m\n",
+            "\u001b[33mhint: \tgit branch -m <name>\u001b[m\n",
+            "Initialized empty Git repository in /content/.git/\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "924Q7tLyTzWM"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
